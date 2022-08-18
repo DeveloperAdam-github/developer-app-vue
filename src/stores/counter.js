@@ -1,16 +1,24 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
-export const useCounterStore = defineStore({
-  id: 'counter',
+export const useMainStore = defineStore({
+  id: 'main',
   state: () => ({
-    counter: 0
+    darkMode: JSON.parse(localStorage.getItem('darkMode')),
   }),
   getters: {
-    doubleCount: (state) => state.counter * 2
+    // doubleCount: (state) => state.counter * 2
   },
   actions: {
-    increment() {
-      this.counter++
-    }
-  }
-})
+    setDarkModeToggle() {
+      this.darkMode = !this.darkMode;
+
+      if (this.darkMode === true) {
+        localStorage.setItem('darkMode', true);
+      }
+
+      if (this.darkMode === false) {
+        localStorage.setItem('darkMode', false);
+      }
+    },
+  },
+});

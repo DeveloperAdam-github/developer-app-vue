@@ -1,29 +1,17 @@
 <script setup>
-import Navbar from "./components/Navbar.vue";
+import Navbar from './components/Navbar.vue';
+import { useMainStore } from './stores/counter';
 
-function toggleMode(mode) {
-  if (mode === "dark") {
-    localStorage.theme = "dark";
-  }
-
-  if (mode === "light") {
-    localStorage.theme = light;
-  }
-
-  if (localStorage.theme === "dark") {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
-  }
-}
+const store = useMainStore();
 </script>
 
-<template class="dark">
-  <div class="h-screen w-screen bg-white dark:bg-black">
-    <navbar />
-    <RouterView />
+<template>
+  <div :class="store.darkMode === true ? 'dark' : ''">
+    <div class="h-screen w-screen bg-white dark:bg-black">
+      <navbar class="bg-white dark:bg-black" />
+      <RouterView class="bg-white dark:bg-black" />
+    </div>
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
