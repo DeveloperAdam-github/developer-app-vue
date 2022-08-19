@@ -5,9 +5,13 @@ module.exports = {
   theme: {
     extend: {
       transitionProperty: {
-        'position': 'position'
-      }
+        position: 'position',
+      },
+      fontFamily: {
+        headline: ['F1-Regular'],
+        boldHeadline: ['F1-Bold'],
+      },
     },
   },
   plugins: [],
-}
+};
