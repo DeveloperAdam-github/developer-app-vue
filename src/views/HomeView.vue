@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue-demi';
+import { onMounted, ref } from "vue-demi";
 
 const titleShow = ref(true);
 const messageShow = ref(false);

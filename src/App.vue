@@ -1,6 +1,6 @@
 <script setup>
-import Navbar from './components/Navbar.vue';
-import { useMainStore } from './stores/counter';
+import Navbar from "./components/Navbar.vue";
+import { useMainStore } from "./stores/counter";
 
 const store = useMainStore();
 </script>
@@ -8,8 +8,8 @@ const store = useMainStore();
 <template>
   <div :class="store.darkMode === true ? 'dark' : ''">
     <div class="h-screen w-screen bg-white dark:bg-black">
-      <navbar class="bg-white dark:bg-black" />
-      <RouterView class="bg-white dark:bg-black" />
+      <navbar class="bg-white dark:bg-black h-[10vh]" />
+      <RouterView class="bg-white dark:bg-black h-[90vh] w-full" />
     </div>
   </div>
 </template>
