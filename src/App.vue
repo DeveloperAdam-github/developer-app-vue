@@ -1,12 +1,12 @@
 <script>
+export const componentName = 'App';
 export default {
-  name: 'App',
+  name: componentName,
   inheritAttrs: false,
   customOptions: {},
 };
 </script>
 <script setup>
-import { VueElement } from 'vue-demi';
 import Navbar from './components/Navbar.vue';
 import { useMainStore } from './stores/counter';
 

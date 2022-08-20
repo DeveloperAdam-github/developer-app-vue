@@ -1,6 +1,7 @@
 <script>
+export const componentName = 'LoginView';
 export default {
-  name: 'LoginView',
+  name: componentName,
   inheritAttrs: false,
   customOptions: {},
 };

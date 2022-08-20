@@ -1,6 +1,7 @@
 <script>
+export const componentName = 'HomeView';
 export default {
-  name: 'HomeView',
+  name: componentName,
   inheritAttrs: false,
   customOptions: {},
 };
