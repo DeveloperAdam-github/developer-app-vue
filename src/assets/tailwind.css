@@ -13,3 +13,17 @@
   font-family: 'F1-Bold';
   src: local('F1-Bold'), url(./fonts/Formula1-Bold.ttf) format('truetype');
 }
+
+@layer components {
+  .blue-btn {
+    @apply bg-blue-500 py-1 px-3 text-lg rounded-md m-4 font-boldHeadline text-white;
+  }
+
+  .input-std {
+    @apply h-10 w-full rounded-lg text-black dark:bg-white bg-gray-300 m-4 pl-4 focus:ring-1 focus:ring-blue-500 focus:outline-1 focus:outline-blue-500;
+  }
+
+  .google-btn {
+    @apply bg-white w-8/12 flex h-10 rounded-lg my-4 p-2 text-blue-500 font-headline text-xs items-center justify-around;
+  }
+}

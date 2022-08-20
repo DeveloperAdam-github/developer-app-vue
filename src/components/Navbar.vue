@@ -2,7 +2,7 @@
 import Slider from './Slider.vue';
 </script>
 <template>
-  <nav class="w-full h-14 bg-white p-4 flex justify-between">
+  <nav class="w-full p-4 flex justify-between items-end">
     <div></div>
     <div>
       <Slider />

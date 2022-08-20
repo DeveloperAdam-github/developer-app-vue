@@ -13,8 +13,8 @@ module.exports = {
       },
       height: {
         '90vh': '90vh',
-        '10vh': '10vh'
-      }
+        '10vh': '10vh',
+      },
     },
   },
   plugins: [],
