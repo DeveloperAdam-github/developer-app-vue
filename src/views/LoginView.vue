@@ -12,9 +12,11 @@ import { auth, provider } from '../firebase';
 import { useRouter } from 'vue-router';
 import { signInWithPopup } from '@firebase/auth';
 import { useUserStore } from '../stores/user';
-import { computed, watch } from 'vue-demi';
+import { computed, ref, watchEffect } from 'vue-demi';
 
 const router = useRouter();
+let showEmailForm = ref(false);
+let hiddenDiv = ref(true);
 
 const goBack = () => {
   console.log('test');
@@ -27,7 +29,14 @@ let doesUserExist = computed(() => {
   return store.user;
 });
 
-watch(() => {
+const toggleShowEmailForm = () => {
+  showEmailForm.value = !showEmailForm.value;
+  setTimeout(() => {
+    hiddenDiv.value = !hiddenDiv.value;
+  }, 450);
+};
+
+watchEffect(() => {
   console.log(store.user, 'does this update?');
   if (store.user !== null) {
     router.push('/');
@@ -36,21 +45,36 @@ watch(() => {
 </script>
 
 <template>
-  <div class="flex flex-col p-8 justify-center items-center">
-    <form
-      action=""
-      class="w-full max-w-xl flex flex-col justify-center items-center"
-    >
-      <label for="email" class="w-full text-left text-base font-headline"
-        >Email</label
-      >
-      <input name="email" type="text" class="input-std" />
-      <label for="password" class="w-full text-left text-base font-headline"
-        >Password</label
-      >
-      <input type="password" class="input-std" />
-      <button class="blue-btn">Login</button>
-    </form>
+  <div
+    class="flex relative flex-col p-8 justify-center items-center text-black dark:text-white"
+  >
+    <div class="w-full h-64 overflow-hidden">
+      <transition name="fade">
+        <form
+          v-if="showEmailForm"
+          action=""
+          class="w-full max-w-xl flex flex-col justify-center items-center"
+        >
+          <label for="email" class="w-full text-left text-base font-headline"
+            >Email</label
+          >
+          <input name="email" type="text" class="input-std" />
+          <label for="password" class="w-full text-left text-base font-headline"
+            >Password</label
+          >
+          <input type="password" class="input-std" />
+          <button class="blue-btn">Login</button>
+        </form>
+      </transition>
+      <transition name="fade-opposite">
+        <div
+          class="h-64 flex flex-col justify-center items-center dark:text-white text-black"
+          v-if="hiddenDiv"
+        >
+          <h1 class="font-boldHeadline text-xl" id="title">DeveloperApp 🚀</h1>
+        </div>
+      </transition>
+    </div>
 
     <div class="w-full mt-10 flex flex-col items-center">
       <button class="google-btn" @click="store.signInWithGoogle()">
@@ -61,10 +85,10 @@ watch(() => {
         />
         <p>Sign in with google</p>
       </button>
-      <!-- <button class="google-btn">
+      <button class="google-btn" @click="toggleShowEmailForm">
         <i class="fa-solid fa-envelope text-blue-500 text-lg"></i>
         <p>Sign in with Email</p>
-      </button> -->
+      </button>
     </div>
     <div
       class="flex flex-col font-headline w-full text-center h-1/5 justify-end"
@@ -75,4 +99,40 @@ watch(() => {
   </div>
 </template>
 
-<style></style>
+<style>
+.fade-enter-from {
+  opacity: 0;
+  transform: translateX(250px);
+}
+
+.fade-enter-active {
+  transition: all 0.5s ease-in-out;
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateX(-250px);
+}
+
+.fade-leave-active {
+  transition: all 0.5s ease-in-out;
+}
+
+.fade-opposite-enter-from {
+  opacity: 0;
+  transform: translateX(-250px);
+}
+
+.fade-opposite-enter-active {
+  transition: all 0.5s ease-in-out;
+}
+
+.fade-opposite-leave-to {
+  opacity: 0;
+  transform: translateX(250px);
+}
+
+.fade-opposite-leave-active {
+  transition: all 0.5s ease-in-out;
+}
+</style>

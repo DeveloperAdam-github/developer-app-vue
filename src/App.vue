@@ -20,10 +20,11 @@ const store = useMainStore();
       <router-view
         v-slot="{ Component }"
         class="bg-white dark:bg-black text-black dark:text-white h-[90vh] w-full"
-      />
-      <transition name="route" mode="out-in">
-        <component :is="Component"></component>
-      </transition>
+      >
+        <transition name="route" mode="out-in">
+          <component :is="Component"></component>
+        </transition>
+      </router-view>
     </div>
   </div>
 </template>
@@ -36,7 +37,7 @@ const store = useMainStore();
 }
 
 .router-enter-active {
-  transition: all 4s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 
 .route-leave-to {
@@ -45,6 +46,6 @@ const store = useMainStore();
 }
 
 .route-leave-active {
-  transition: all 4s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 </style>

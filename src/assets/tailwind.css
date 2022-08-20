@@ -24,6 +24,6 @@
   }
 
   .google-btn {
-    @apply bg-white w-8/12 flex h-10 rounded-lg my-4 p-2 text-blue-500 font-headline text-xs items-center justify-around;
+    @apply dark:bg-white w-8/12 flex h-10 bg-gray-300 rounded-lg my-4 p-2 text-blue-500 font-headline text-xs items-center justify-around;
   }
 }
