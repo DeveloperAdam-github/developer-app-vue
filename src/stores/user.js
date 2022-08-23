@@ -9,6 +9,7 @@ import {
   getFirestore,
 } from 'firebase/firestore';
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
+// import { getFirestore} from '@capacitor-firebase/app'
 import { getDatabase, set, ref } from 'firebase/database';
 
 export const useUserStore = defineStore({
@@ -23,9 +24,14 @@ export const useUserStore = defineStore({
   actions: {
     writeUserData(data) {
       const db = getFirestore(app);
-      setDoc(doc(db, 'uniqueLinks', data.uid), {
-        uniqueLink: data.uid,
-      });
+      setDoc(
+        doc,
+        (db, 'uniqueLinks', data.uid),
+        {
+          uniqueLink: data.uid,
+        },
+        console.log('logging.....its done')
+      );
     },
     async updateDisplayNameOnRegister(displayName) {
       const auth = getAuth();
@@ -51,6 +57,7 @@ export const useUserStore = defineStore({
         this.error = err.code;
       });
       this.user = result.user;
+      this.uniqueLink = result.user.uid;
       await this.updateDisplayNameOnRegister(displayName);
       this.writeUserData(this.user);
     },
@@ -60,6 +67,7 @@ export const useUserStore = defineStore({
         password,
       });
       this.user = result.user;
+      this.uniqueLink = result.user.uid;
     },
     async signInWithGoogle() {
       const result = await FirebaseAuthentication.signInWithGoogle();

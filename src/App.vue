@@ -11,6 +11,8 @@ import { ref } from 'vue-demi';
 import Navbar from './components/Navbar.vue';
 import { useMainStore } from './stores/counter';
 import { doc, getDoc, getFirestore } from '@firebase/firestore';
+import { FirebaseApp } from '@capacitor-firebase/app';
+import { signInWithPopup, getAuth, updateProfile } from 'firebase/auth';
 import { app } from './firebase';
 import { useUserStore } from './stores/user';
 import { useRoute, useRouter } from 'vue-router';
@@ -26,31 +28,24 @@ function toggleNav(value) {
   showNav.value = value;
 }
 
+function logoutUser() {
+  userStore.logout();
+}
+
 function copyLinkToClipboard(value) {
   const db = getFirestore(app);
   const docRef = doc(db, 'uniqueLinks', userStore.user.uid);
-  console.log('testing');
   getDoc(docRef).then((response) => {
-    console.log('hello test?')(
-      (userStore.uniqueLink =
-        response._document.data.value.mapValue.fields.uniqueLink.stringValue)
-    );
-    navigator.clipboard
-      .writeText(`http://localhost:5173/user/${userStore.uniqueLink}`)
-      .then(() => {
-        showToast.value = true;
-      });
+    console.log(response, 'lolol response'),
+      navigator.clipboard
+        .writeText(`http://localhost:5173/user/${userStore.uniqueLink}`)
+        .then(() => {
+          showToast.value = true;
+        });
     setTimeout(() => {
       showToast.value = false;
     }, 6000);
   });
-
-  // navigator.clipboard.writeText(`http://localhost:5173/user/test`).then(() => {
-  //   showToast.value = true;
-  // });
-  // setTimeout(() => {
-  //   showToast.value = false;
-  // }, 6000);
 }
 </script>
 
@@ -62,6 +57,7 @@ function copyLinkToClipboard(value) {
         class="w-full z-50 top-[10vh] absolute overflow-hidden transition-height duration-500 ease-in-out flex items-center justify-center bg-white text-black dark:text-white dark:bg-black flex flex-col"
       >
         The navbar is here, wont be many links :)
+        <p class="my-4" @click="logoutUser">LOGOUT</p>
         <input type="text" placeholder="Text input paste here..." />
       </div>
       <navbar
