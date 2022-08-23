@@ -15,7 +15,10 @@ module.exports = {
         '90vh': '90vh',
         '10vh': '10vh',
       },
+      transitionProperty: {
+        height: 'height',
+      },
     },
   },
-  plugins: [],
+  plugins: [require('daisyui')],
 };

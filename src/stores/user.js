@@ -1,21 +1,79 @@
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithPopup, getAuth, updateProfile } from 'firebase/auth';
 import { defineStore } from 'pinia';
-import { auth, provider } from '../firebase';
+import { provider, app } from '../firebase';
+import {
+  addDoc,
+  collection,
+  doc,
+  setDoc,
+  getFirestore,
+} from 'firebase/firestore';
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
+import { getDatabase, set, ref } from 'firebase/database';
 
 export const useUserStore = defineStore({
   id: 'user',
   state: () => ({
     user: null,
+    loading: false,
+    error: '',
+    uniqueLink: '',
   }),
-  getters: {
-    // doubleCount: (state) => state.counter * 2
-  },
+  getters: {},
   actions: {
-    signInWithGoogle() {
-      signInWithPopup(auth, provider).then((result) => {
-        console.log(result);
-        this.user = result.user;
+    writeUserData(data) {
+      const db = getFirestore(app);
+      setDoc(doc(db, 'uniqueLinks', data.uid), {
+        uniqueLink: data.uid,
       });
+    },
+    async updateDisplayNameOnRegister(displayName) {
+      const auth = getAuth();
+      await updateProfile(auth.currentUser, {
+        displayName: displayName,
+      })
+        .then(() => {
+          this.user.displayName = displayName;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    async createUserWithEmailAndPassword(displayName, email, password) {
+      const result = await FirebaseAuthentication.createUserWithEmailAndPassword(
+        {
+          displayName,
+          email,
+          password,
+        }
+      ).catch((err) => {
+        console.log('error mate', err.code);
+        this.error = err.code;
+      });
+      this.user = result.user;
+      await this.updateDisplayNameOnRegister(displayName);
+      this.writeUserData(this.user);
+    },
+    async signInWithEmailAndPassword(email, password) {
+      const result = await FirebaseAuthentication.signInWithEmailAndPassword({
+        email,
+        password,
+      });
+      this.user = result.user;
+    },
+    async signInWithGoogle() {
+      const result = await FirebaseAuthentication.signInWithGoogle();
+      console.log(result);
+      this.user = result.user;
+      this.writeUserData(this.user);
+    },
+    logout() {
+      this.user = null;
+      console.log(this.user, 'hello clicked');
+    },
+    clearErrorMessage() {
+      console.log('clearing the error message');
+      this.error = '';
     },
   },
 });

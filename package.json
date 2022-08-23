@@ -7,9 +7,14 @@
     "preview": "vite preview --port 4173"
   },
   "dependencies": {
+    "@capacitor-firebase/app": "^1.0.0",
+    "@capacitor-firebase/authentication": "^1.0.0",
+    "@capacitor/android": "^4.1.0",
     "@capacitor/core": "^4.1.0",
     "@capacitor/ios": "^4.1.0",
     "autoprefixer": "^10",
+    "capacitor": "^0.5.5",
+    "daisyui": "^2.24.0",
     "firebase": "^9.9.3",
     "pinia": "^2.0.17",
     "postcss": "^8",
