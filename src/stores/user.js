@@ -1,6 +1,6 @@
-import { signInWithPopup, getAuth, updateProfile } from 'firebase/auth';
+import { updateProfile } from 'firebase/auth';
 import { defineStore } from 'pinia';
-import { provider, app } from '../firebase';
+import { db, auth } from '../firebase';
 import {
   addDoc,
   collection,
@@ -9,8 +9,6 @@ import {
   getFirestore,
 } from 'firebase/firestore';
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
-// import { getFirestore} from '@capacitor-firebase/app'
-import { getDatabase, set, ref } from 'firebase/database';
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -22,24 +20,19 @@ export const useUserStore = defineStore({
   }),
   getters: {},
   actions: {
-    writeUserData(data) {
-      const db = getFirestore(app);
-      setDoc(
-        doc,
-        (db, 'uniqueLinks', data.uid),
-        {
-          uniqueLink: data.uid,
-        },
-        console.log('logging.....its done')
-      );
+    async writeUserData(data) {
+      await setDoc(doc(db, 'uniqueLinks', data.email), {
+        uniqueLink: data.email,
+      });
     },
     async updateDisplayNameOnRegister(displayName) {
-      const auth = getAuth();
-      await updateProfile(auth.currentUser, {
+      updateProfile(auth.currentUser, {
         displayName: displayName,
       })
         .then(() => {
+          console.log('is this working yet please say yes?');
           this.user.displayName = displayName;
+          console.log(this.user, 'IS THE DISPLAY NAME UPDATED??!!🔥');
         })
         .catch((err) => {
           console.log(err);
@@ -59,7 +52,7 @@ export const useUserStore = defineStore({
       this.user = result.user;
       this.uniqueLink = result.user.uid;
       await this.updateDisplayNameOnRegister(displayName);
-      this.writeUserData(this.user);
+      await this.writeUserData(result.user);
     },
     async signInWithEmailAndPassword(email, password) {
       const result = await FirebaseAuthentication.signInWithEmailAndPassword({
@@ -73,7 +66,7 @@ export const useUserStore = defineStore({
       const result = await FirebaseAuthentication.signInWithGoogle();
       console.log(result);
       this.user = result.user;
-      this.writeUserData(this.user);
+      await this.writeUserData(result.user);
     },
     logout() {
       this.user = null;

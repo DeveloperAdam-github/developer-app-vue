@@ -10,10 +10,16 @@ export default {
 import { ref } from 'vue-demi';
 import Navbar from './components/Navbar.vue';
 import { useMainStore } from './stores/counter';
-import { doc, getDoc, getFirestore } from '@firebase/firestore';
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+} from '@firebase/firestore';
 import { FirebaseApp } from '@capacitor-firebase/app';
 import { signInWithPopup, getAuth, updateProfile } from 'firebase/auth';
-import { app } from './firebase';
+import { app, db } from './firebase';
 import { useUserStore } from './stores/user';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -34,19 +40,28 @@ function logoutUser() {
 
 function copyLinkToClipboard(value) {
   const db = getFirestore(app);
-  const docRef = doc(db, 'uniqueLinks', userStore.user.uid);
-  getDoc(docRef).then((response) => {
-    console.log(response, 'lolol response'),
-      navigator.clipboard
-        .writeText(`http://localhost:5173/user/${userStore.uniqueLink}`)
-        .then(() => {
-          showToast.value = true;
-        });
-    setTimeout(() => {
-      showToast.value = false;
-    }, 6000);
+  getDocs(collection(db, 'uniqueLinks', userStore.user.uid)).then(
+    (response) => {
+      console.log(response, 'lolol response'),
+        navigator.clipboard
+          .writeText(`http://localhost:5173/user/${userStore.uniqueLink}`)
+          .then(() => {
+            showToast.value = true;
+          });
+      setTimeout(() => {
+        showToast.value = false;
+      }, 6000);
+    }
+  );
+}
+
+async function test() {
+  const querySnapshot = await getDocs(collection(db, 'uniqueLinks'));
+  querySnapshot.forEach((doc) => {
+    console.log(`${doc.id} => ${doc.data()}`);
   });
 }
+test();
 </script>
 
 <template>

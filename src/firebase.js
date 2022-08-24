@@ -2,8 +2,14 @@
 import { initializeApp } from 'firebase/app';
 import { getDatabase } from 'firebase/database';
 import { getAnalytics } from 'firebase/analytics';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  indexedDBLocalPersistence,
+  initializeAuth,
+} from 'firebase/auth';
 import { Capacitor } from '@capacitor/core';
+import { collection, getDocs, getFirestore } from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -22,7 +28,8 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+// const db = getDatabase(app);
+const db = getFirestore(app);
 const analytics = getAnalytics(app);
 // const auth = getAuth();
 const provider = new GoogleAuthProvider();
@@ -40,5 +47,7 @@ function whichAuth() {
 }
 
 const auth = whichAuth();
+
+console.log(auth, 'this is aauth?');
 
 export { provider, analytics, auth, db, app };

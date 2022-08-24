@@ -39,7 +39,6 @@ const toggleShowEmailForm = () => {
 };
 
 watchEffect(() => {
-  console.log(store.user, 'does this update?');
   if (store.user !== null) {
     router.push('/');
   }
