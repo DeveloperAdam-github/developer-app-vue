@@ -49,7 +49,7 @@ watchEffect(() => {
 });
 
 const submitForm = () => {
-  store.createUserWithEmailAndPassword(
+  store.createUserWithEmailAndPasswordFn(
     displayName.value,
     email.value,
     password.value

@@ -91,6 +91,7 @@ const toggleRegisterForm = () => {
       v-if="store.user"
     >
       <div class="h-full w-full flex flex-col">
+        <!-- profile pic -->
         <div class="w-full h-20 relative">
           <img
             src="https://geekflare.com/wp-content/uploads/2019/12/code-review-tools.png"
@@ -98,11 +99,22 @@ const toggleRegisterForm = () => {
             alt=""
           />
           <div class="w-20 h-20 rounded-full absolute -bottom-10 left-10">
-            <img
-              src="https://pbs.twimg.com/profile_images/725013638411489280/4wx8EcIA_400x400.jpg"
-              class="full w-full rounded-full"
-              alt=""
-            />
+            <div class="w-full h-full relative rounded-full">
+              <img
+                v-if="store.user.photoUrl"
+                :src="store.user.photoUrl"
+                class="full w-full rounded-full"
+                alt=""
+              />
+              <div
+                v-else
+                class="flex items-center justify-center h-full w-full absolute top-0 rounded-full dark:bg-gray-200 bg-black"
+              >
+                <i
+                  class="fa-solid fa-plus text-xl text-white dark:text-black hover:text-3xl"
+                ></i>
+              </div>
+            </div>
           </div>
         </div>
         <div class="w-full h-64 flex flex-col px-6">

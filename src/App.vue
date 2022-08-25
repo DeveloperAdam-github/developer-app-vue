@@ -39,29 +39,37 @@ function logoutUser() {
 }
 
 function copyLinkToClipboard(value) {
-  const db = getFirestore(app);
-  getDocs(collection(db, 'uniqueLinks', userStore.user.uid)).then(
-    (response) => {
-      console.log(response, 'lolol response'),
-        navigator.clipboard
-          .writeText(`http://localhost:5173/user/${userStore.uniqueLink}`)
-          .then(() => {
-            showToast.value = true;
-          });
-      setTimeout(() => {
-        showToast.value = false;
-      }, 6000);
-    }
-  );
+  //  navigator.clipboard
+  //         .writeText(`http://localhost:5173/user/${userStore.uniqueLink}`)
+  //         .then(() => {
+  //           showToast.value = true;
+  //         });
+  //     setTimeout(() => {
+  //       showToast.value = false;
+  //     }, 6000);
+  // const db = getFirestore(app);
+  // getDocs(collection(db, 'uniqueLinks', userStore.user.uid)).then(
+  //   (response) => {
+  //     console.log(response, 'lolol response'),
+  //       navigator.clipboard
+  //         .writeText(`http://localhost:5173/user/${userStore.uniqueLink}`)
+  //         .then(() => {
+  //           showToast.value = true;
+  //         });
+  //     setTimeout(() => {
+  //       showToast.value = false;
+  //     }, 6000);
+  //   }
+  // );
 }
 
-async function test() {
-  const querySnapshot = await getDocs(collection(db, 'uniqueLinks'));
-  querySnapshot.forEach((doc) => {
-    console.log(`${doc.id} => ${doc.data()}`);
-  });
-}
-test();
+// async function test() {
+//   const querySnapshot = await getDocs(collection(db, 'uniqueLinks'));
+//   querySnapshot.forEach((doc) => {
+//     console.log(`${doc.id} => ${doc.data()}`);
+//   });
+// }
+// test();
 </script>
 
 <template>

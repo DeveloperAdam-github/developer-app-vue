@@ -1,6 +1,11 @@
-import { updateProfile } from 'firebase/auth';
+import {
+  updateProfile,
+  getAuth,
+  initializeAuth,
+  createUserWithEmailAndPassword,
+} from 'firebase/auth';
 import { defineStore } from 'pinia';
-import { db, auth } from '../firebase';
+import { db, auth, app } from '../firebase';
 import {
   addDoc,
   collection,
@@ -22,38 +27,61 @@ export const useUserStore = defineStore({
   actions: {
     async writeUserData(data) {
       await setDoc(doc(db, 'uniqueLinks', data.email), {
-        uniqueLink: data.email,
+        uniqueLink: data.uid,
       });
     },
     async updateDisplayNameOnRegister(displayName) {
-      updateProfile(auth.currentUser, {
+      const currentUser = await FirebaseAuthentication.getCurrentUser();
+      // const currentUserToken = await FirebaseAuthentication.getIdToken();
+      // console.log(currentUser, 'the current user');
+      // console.log(currentUserToken, 'the current user token?');
+
+      console.log(auth.currentUser, '<<<<<<<< will this show now?');
+
+      await updateProfile(auth.currentUser, {
         displayName: displayName,
       })
         .then(() => {
-          console.log('is this working yet please say yes?');
           this.user.displayName = displayName;
-          console.log(this.user, 'IS THE DISPLAY NAME UPDATED??!!🔥');
+          console.log(
+            this.user.displayName,
+            'IS THE DISPLAY NAME UPDATED??!!🔥'
+          );
         })
         .catch((err) => {
           console.log(err);
         });
     },
-    async createUserWithEmailAndPassword(displayName, email, password) {
-      const result = await FirebaseAuthentication.createUserWithEmailAndPassword(
-        {
-          displayName,
-          email,
-          password,
-        }
-      ).catch((err) => {
-        console.log('error mate', err.code);
-        this.error = err.code;
-      });
-      this.user = result.user;
-      this.uniqueLink = result.user.uid;
-      await this.updateDisplayNameOnRegister(displayName);
-      await this.writeUserData(result.user);
+    createUserWithEmailAndPasswordFn(displayName, email, password) {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          this.user = userCredential.user;
+          console.log(userCredential, 'does this work???');
+          this.writeUserData(userCredential.user.uid);
+          this.updateDisplayNameOnRegister(displayName);
+        })
+        .catch((error) => {
+          console.log(error);
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // ..
+        });
     },
+    // async createUserWithEmailAndPassword(displayName, email, password) {
+    //   const result = await FirebaseAuthentication.createUserWithEmailAndPassword(
+    //     {
+    //       email,
+    //       password,
+    //     }
+    //   ).catch((err) => {
+    //     console.log('error mate', err.code);
+    //     this.error = err.code;
+    //   });
+    //   this.user = result.user;
+    //   this.uniqueLink = result.user.uid;
+    //   await this.writeUserData(result.user);
+    //   await this.updateDisplayNameOnRegister(displayName);
+    // },
     async signInWithEmailAndPassword(email, password) {
       const result = await FirebaseAuthentication.signInWithEmailAndPassword({
         email,
