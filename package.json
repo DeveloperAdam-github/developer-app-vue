@@ -13,6 +13,7 @@
     "@capacitor/camera": "^4.1.0",
     "@capacitor/core": "^4.1.0",
     "@capacitor/ios": "^4.1.0",
+    "@codetrix-studio/capacitor-google-auth": "^3.2.0",
     "autoprefixer": "^10",
     "capacitor": "^0.5.5",
     "daisyui": "^2.24.0",

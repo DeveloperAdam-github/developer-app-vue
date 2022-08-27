@@ -13,6 +13,7 @@ import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 // import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -45,11 +46,12 @@ function whichAuth() {
     // GoogleAuth.initialize();
   } else {
     auth = getAuth(app);
-    // GoogleAuth.initialize({
-    //   clientId: '1:89637228341:web:1acd52904225ca7413067c',
-    //   scopes: ['profile', 'email'],
-    //   grantOfflineAccess: true,
-    // });
+    GoogleAuth.initialize({
+      clientId:
+        '89637228341-i0d0klhtf489bjusguqj4ngsubcn8ubs.apps.googleusercontent.com',
+      scopes: ['profile', 'email'],
+      grantOfflineAccess: true,
+    });
   }
   return auth;
 }

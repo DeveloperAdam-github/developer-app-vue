@@ -112,15 +112,15 @@ const toggleRegisterForm = () => {
           <div class="w-20 h-20 rounded-full absolute -bottom-10 left-10">
             <div class="w-full h-full relative rounded-full">
               <img
-                v-if="store.user.imageUrl"
-                :src="store.user.imageUrl"
+                v-if="user.imageUrl"
+                :src="user.imageUrl"
                 @click="takePicture"
                 class="full w-full h-full rounded-full object-cover"
                 alt=""
               />
               <img
-                v-else-if="store.user.photoUrl"
-                :src="store.user.photoUrl"
+                v-else-if="user.photoUrl"
+                :src="user.photoUrl"
                 @click="takePicture"
                 class="full w-full h-full rounded-full object-cover"
                 alt=""
@@ -129,11 +129,7 @@ const toggleRegisterForm = () => {
                 v-else
                 class="flex items-center justify-center h-full w-full absolute top-0 rounded-full dark:bg-gray-200 bg-black"
               >
-                <div class="relative">
-                  <div
-                    class="absolute -bottom-12 left-7 rounded-full h-6 w-6 bg-green-500"
-                  ></div>
-                </div>
+                <div class="relative"></div>
                 <i
                   @click="takePicture"
                   class="fa-solid fa-plus text-xl p-2 text-white dark:text-black"
@@ -152,8 +148,14 @@ const toggleRegisterForm = () => {
           </div>
           <div class="w-full h-64">
             <div class="w-fill flex flex-col">
-              <h1 class="text-lg font-boldHeadline">
+              <h1
+                class="text-lg font-boldHeadline"
+                v-if="store.user.displayName"
+              >
                 {{ store.user.displayName }}
+              </h1>
+              <h1 class="text-lg font-boldHeadline" v-else>
+                {{ store.user.name }}
               </h1>
               <div class="flex my-1 text-sm">
                 <span class="flex items-center"

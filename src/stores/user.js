@@ -23,6 +23,7 @@ import {
   getDownloadURL,
   uploadString,
 } from 'firebase/storage';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -42,6 +43,7 @@ export const useUserStore = defineStore({
     updateProfilePicture(imageUrl) {
       updateProfile(auth.currentUser, {
         photoURL: imageUrl,
+        photoUrl: imageUrl,
         imageUrl: imageUrl,
       })
         .then(() => {
@@ -54,13 +56,6 @@ export const useUserStore = defineStore({
         });
     },
     async updateDisplayNameOnRegister(displayName) {
-      const currentUser = await FirebaseAuthentication.getCurrentUser();
-      // const currentUserToken = await FirebaseAuthentication.getIdToken();
-      // console.log(currentUser, 'the current user');
-      // console.log(currentUserToken, 'the current user token?');
-
-      console.log(auth.currentUser, '<<<<<<<< will this show now?');
-
       await updateProfile(auth.currentUser, {
         displayName: displayName,
       })
@@ -90,21 +85,6 @@ export const useUserStore = defineStore({
           // ..
         });
     },
-    // async createUserWithEmailAndPassword(displayName, email, password) {
-    //   const result = await FirebaseAuthentication.createUserWithEmailAndPassword(
-    //     {
-    //       email,
-    //       password,
-    //     }
-    //   ).catch((err) => {
-    //     console.log('error mate', err.code);
-    //     this.error = err.code;
-    //   });
-    //   this.user = result.user;
-    //   this.uniqueLink = result.user.uid;
-    //   await this.writeUserData(result.user);
-    //   await this.updateDisplayNameOnRegister(displayName);
-    // },
     async signInWithEmailAndPassword(email, password) {
       const result = await FirebaseAuthentication.signInWithEmailAndPassword({
         email,
@@ -113,41 +93,16 @@ export const useUserStore = defineStore({
       this.user = result.user;
       this.uniqueLink = result.user.uid;
     },
-    // async signInWithGoogle() {
-    //   const result = await FirebaseAuthentication.signInWithGoogle();
-    //   const credential = GoogleAuthProvider.credential(
-    //     result.credential?.idToken
-    //   );
-    //   const auth = getAuth();
-    //   await signInWithCredential(auth, credential);
-    //   this.user = result.user;
-    //   await this.writeUserData(result.user);
-    // },
     async signInWithGoogle() {
-      // if (Capacitor.isNativePlatform()) {
-      //   const response = await GoogleAuth.signIn();
-      //   console.log(response, 'the resposne if it wroks?');
-      //   this.user = response;
-      // } else {
-      //   signInWithPopup(auth, provider).then((result) => {
-      //     console.log(result);
-      //     this.user = result.user;
-      //     this.writeUserData(result.user);
-      //   });
-      // }
-      // DOESNT WORK???
-      console.log('BEFORE BEFORE firebase google result???????');
-      const result = await FirebaseAuthentication.signInWithGoogle();
-      const credential = GoogleAuthProvider.credential(
-        result.credential?.idToken
-      );
-      console.log(result, 'is there a result?');
-      console.log(credential, 'is there a credential?');
-      await signInWithCredential(auth, credential);
-      this.uniqueLink = result.user.uid;
-
-      this.user = result.user;
-      await this.writeUserData(result.user);
+      if (Capacitor.isNativePlatform()) {
+        const response = await GoogleAuth.signIn();
+        console.log(response, 'the resposne if it wroks?');
+        this.user = response;
+      } else {
+        const response = await GoogleAuth.signIn();
+        this.user = response;
+        console.log(response, 'the login google response');
+      }
     },
     logout() {
       this.user = null;
@@ -158,9 +113,6 @@ export const useUserStore = defineStore({
       const user = auth.currentUser;
       const path = `uploads/${user.uid}/profile`;
       const storageRef = ref(storage, path);
-      // console.log(user, ' the user');
-      // console.log(path, 'the path?');
-      // console.log(storageRef, 'the storage ref?');
 
       try {
         await uploadString(storageRef, image.base64String, 'base64');
