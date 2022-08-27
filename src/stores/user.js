@@ -4,6 +4,8 @@ import {
   initializeAuth,
   createUserWithEmailAndPassword,
   signInWithPopup,
+  GoogleAuthProvider,
+  signInWithCredential,
 } from 'firebase/auth';
 import { defineStore } from 'pinia';
 import { db, auth, app, storage, provider } from '../firebase';
@@ -40,9 +42,11 @@ export const useUserStore = defineStore({
     updateProfilePicture(imageUrl) {
       updateProfile(auth.currentUser, {
         photoURL: imageUrl,
+        imageUrl: imageUrl,
       })
         .then(() => {
           this.user.imageUrl = imageUrl;
+          this.user.photoUrl = imageUrl;
           console.log(this.user.imageUrl, 'IS THE DISPLAY IMAGE URL UPDATED🔥');
         })
         .catch((err) => {
@@ -109,6 +113,16 @@ export const useUserStore = defineStore({
       this.user = result.user;
       this.uniqueLink = result.user.uid;
     },
+    // async signInWithGoogle() {
+    //   const result = await FirebaseAuthentication.signInWithGoogle();
+    //   const credential = GoogleAuthProvider.credential(
+    //     result.credential?.idToken
+    //   );
+    //   const auth = getAuth();
+    //   await signInWithCredential(auth, credential);
+    //   this.user = result.user;
+    //   await this.writeUserData(result.user);
+    // },
     async signInWithGoogle() {
       // if (Capacitor.isNativePlatform()) {
       //   const response = await GoogleAuth.signIn();
@@ -121,19 +135,17 @@ export const useUserStore = defineStore({
       //     this.writeUserData(result.user);
       //   });
       // }
-      // signInWithPopup(auth, provider)
-      //   .then((result) => {
-      //     console.log(result);
-      //     this.user = result.user;
-      //     this.writeUserData(result.user);
-      //   })
-      //   .catch((error) => {
-      //     console.log(error, 'why google no work');
-      //   });
       // DOESNT WORK???
       console.log('BEFORE BEFORE firebase google result???????');
       const result = await FirebaseAuthentication.signInWithGoogle();
-      console.log(result, 'firebase google result???????');
+      const credential = GoogleAuthProvider.credential(
+        result.credential?.idToken
+      );
+      console.log(result, 'is there a result?');
+      console.log(credential, 'is there a credential?');
+      await signInWithCredential(auth, credential);
+      this.uniqueLink = result.user.uid;
+
       this.user = result.user;
       await this.writeUserData(result.user);
     },
@@ -159,8 +171,15 @@ export const useUserStore = defineStore({
         console.log(userDocRef, 'the user doc ref?');
 
         await setDoc(userDocRef, {
-          imageUrl,
+          imageUrl: imageUrl,
         });
+
+        await setDoc(userDocRef, {
+          photoUrl: imageUrl,
+        });
+
+        console.log(userDocRef, 'should be an updated user doc?');
+
         this.updateProfilePicture(imageUrl);
         return true;
       } catch (error) {

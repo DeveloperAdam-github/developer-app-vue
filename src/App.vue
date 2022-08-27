@@ -19,7 +19,7 @@ import {
 } from '@firebase/firestore';
 import { FirebaseApp } from '@capacitor-firebase/app';
 import { signInWithPopup, getAuth, updateProfile } from 'firebase/auth';
-import { app, db } from './firebase';
+import { app, auth, db } from './firebase';
 import { useUserStore } from './stores/user';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -39,28 +39,14 @@ function logoutUser() {
 }
 
 function copyLinkToClipboard(value) {
-  //  navigator.clipboard
-  //         .writeText(`http://localhost:5173/user/${userStore.uniqueLink}`)
-  //         .then(() => {
-  //           showToast.value = true;
-  //         });
-  //     setTimeout(() => {
-  //       showToast.value = false;
-  //     }, 6000);
-  // const db = getFirestore(app);
-  // getDocs(collection(db, 'uniqueLinks', userStore.user.uid)).then(
-  //   (response) => {
-  //     console.log(response, 'lolol response'),
-  //       navigator.clipboard
-  //         .writeText(`http://localhost:5173/user/${userStore.uniqueLink}`)
-  //         .then(() => {
-  //           showToast.value = true;
-  //         });
-  //     setTimeout(() => {
-  //       showToast.value = false;
-  //     }, 6000);
-  //   }
-  // );
+  navigator.clipboard
+    .writeText(`http://localhost:5173/user/${userStore.uniqueLink}`)
+    .then(() => {
+      showToast.value = true;
+    });
+  setTimeout(() => {
+    showToast.value = false;
+  }, 6000);
 }
 
 // async function test() {

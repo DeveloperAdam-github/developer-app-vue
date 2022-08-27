@@ -20,6 +20,7 @@ const handleChange = (event) => {
 const copy = () => {
   isCopied.value = true;
   emit('copyLink', isCopied.value);
+  console.log('clicked?');
 };
 
 const props = defineProps({

@@ -112,8 +112,15 @@ const toggleRegisterForm = () => {
           <div class="w-20 h-20 rounded-full absolute -bottom-10 left-10">
             <div class="w-full h-full relative rounded-full">
               <img
-                v-if="store.user.photoURL"
-                :src="store.user.photoURL"
+                v-if="store.user.imageUrl"
+                :src="store.user.imageUrl"
+                @click="takePicture"
+                class="full w-full h-full rounded-full object-cover"
+                alt=""
+              />
+              <img
+                v-else-if="store.user.photoUrl"
+                :src="store.user.photoUrl"
                 @click="takePicture"
                 class="full w-full h-full rounded-full object-cover"
                 alt=""
