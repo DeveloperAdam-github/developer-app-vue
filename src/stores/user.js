@@ -24,6 +24,7 @@ import {
   uploadString,
 } from 'firebase/storage';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+import { useUserDataStore } from './userData';
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -32,6 +33,8 @@ export const useUserStore = defineStore({
     loading: false,
     error: '',
     uniqueLink: '',
+    heroImage: '',
+    userData: ['heroImage'],
   }),
   getters: {},
   actions: {
@@ -77,6 +80,14 @@ export const useUserStore = defineStore({
           console.log(userCredential, 'does this work???');
           this.writeUserData(userCredential.user.uid);
           this.updateDisplayNameOnRegister(displayName);
+          const docRef = doc(db, `users/${userCredential.user.uid}`);
+          setDoc(
+            docRef,
+            {
+              displayName: displayName,
+            },
+            { merge: true }
+          );
         })
         .catch((error) => {
           console.log(error);
@@ -86,12 +97,14 @@ export const useUserStore = defineStore({
         });
     },
     async signInWithEmailAndPassword(email, password) {
+      const userDataStore = useUserDataStore();
       const result = await FirebaseAuthentication.signInWithEmailAndPassword({
         email,
         password,
       });
       this.user = result.user;
       this.uniqueLink = result.user.uid;
+      userDataStore.getAllUserData();
     },
     async signInWithGoogle() {
       if (Capacitor.isNativePlatform()) {
@@ -122,13 +135,14 @@ export const useUserStore = defineStore({
         console.log(imageUrl, 'image Url');
         console.log(userDocRef, 'the user doc ref?');
 
-        await setDoc(userDocRef, {
-          imageUrl: imageUrl,
-        });
-
-        await setDoc(userDocRef, {
-          photoUrl: imageUrl,
-        });
+        await setDoc(
+          userDocRef,
+          {
+            imageUrl: imageUrl,
+            photoUrl: imageUrl,
+          },
+          { merge: true }
+        );
 
         console.log(userDocRef, 'should be an updated user doc?');
 
@@ -136,6 +150,35 @@ export const useUserStore = defineStore({
         return true;
       } catch (error) {
         console.log(error, 'errorrrrrr');
+      }
+    },
+    async uploadHeroPicture(image) {
+      const user = auth.currentUser;
+      const path = `uploads/${user.uid}/heroImage`;
+      const storageRef = ref(storage, path);
+
+      try {
+        await uploadString(storageRef, image.base64String, 'base64');
+        const imageUrl = await getDownloadURL(storageRef);
+        const userDocRef = doc(db, `users/${user.uid}`);
+
+        console.log(imageUrl, 'image Url');
+        console.log(userDocRef, 'the user doc ref?');
+
+        await setDoc(
+          userDocRef,
+          {
+            heroImage: imageUrl,
+          },
+          { merge: true }
+        );
+
+        console.log(userDocRef, 'should be an updated user doc?');
+        this.userData = imageUrl;
+        console.log(this.userData.heroImage, 'IS THE HERO IMAGE URL UPDATED🔥');
+        return true;
+      } catch (error) {
+        console.log(error);
       }
     },
     clearErrorMessage() {

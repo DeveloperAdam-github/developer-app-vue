@@ -40,7 +40,7 @@ function logoutUser() {
 
 function copyLinkToClipboard(value) {
   navigator.clipboard
-    .writeText(`http://localhost:5173/user/${userStore.uniqueLink}`)
+    .writeText(`http://localhost:5173/user/${userStore.user.uid}`)
     .then(() => {
       showToast.value = true;
     });

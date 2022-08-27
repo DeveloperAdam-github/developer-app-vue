@@ -1,5 +1,23 @@
+<script setup>
+import { useShowPageStore } from '../stores/showPage';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const store = useShowPageStore();
+const router = useRouter();
+const userData = ref(store);
+
+const routerParams = router.currentRoute._value.params.id;
+console.log(routerParams);
+
+const loadUserData = onMounted(() => {
+  store.getAllUserData(routerParams);
+});
+</script>
+
 <template>
   <div
+    v-if="userData"
     class="h-full w-full flex justify-center items-center text-black dark:text-white"
   >
     <div
@@ -8,14 +26,30 @@
       <div class="h-full w-full flex flex-col">
         <div class="w-full h-20 relative">
           <img
-            src="https://geekflare.com/wp-content/uploads/2019/12/code-review-tools.png"
+            v-if="store.heroImage"
+            :src="store.heroImage"
             class="object-cover h-full w-full"
             alt=""
           />
+          <div
+            v-else
+            class="bg-gray-200 dark:bg-gray-400 w-full h-full flex items-center justify-center"
+          >
+            <i class="fa-solid fa-plus text-2xl p-2 text-black"></i>
+          </div>
           <div class="w-20 h-20 rounded-full absolute -bottom-10 left-10">
             <img
-              src="https://pbs.twimg.com/profile_images/725013638411489280/4wx8EcIA_400x400.jpg"
-              class="full w-full rounded-full"
+              v-if="store.imageUrl"
+              :src="store.imageUrl"
+              @click="takePicture"
+              class="full w-full h-full rounded-full object-cover"
+              alt=""
+            />
+            <img
+              v-else-if="store.photoUrl"
+              :src="store.photoUrl"
+              @click="takePicture"
+              class="full w-full h-full rounded-full object-cover"
               alt=""
             />
           </div>
@@ -30,7 +64,10 @@
           </div>
           <div class="w-full h-64">
             <div class="w-fill flex flex-col">
-              <h1 class="text-lg font-boldHeadline">Homer Simpson</h1>
+              <h1 v-if="store.displayName" class="text-lg font-boldHeadline">
+                {{ store.displayName }}
+              </h1>
+              <h1 v-else>Null</h1>
               <div class="flex my-1 text-sm">
                 <span class="flex items-center"
                   ><i class="fa-solid fa-location-dot"></i>

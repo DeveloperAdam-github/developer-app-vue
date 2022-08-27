@@ -1,6 +1,7 @@
 <script>
 export const componentName = 'HomeView';
 export default {
+  components: { Modal },
   name: componentName,
   inheritAttrs: false,
   customOptions: {},
@@ -12,17 +13,21 @@ import { onMounted, ref } from 'vue-demi';
 import { useRouter } from 'vue-router';
 import LoginForm from '../components/Forms/LoginForm.vue';
 import { useUserStore } from '../stores/user';
+import { useUserDataStore } from '../stores/userData';
 import { Camera, CameraResultType } from '@capacitor/camera';
 import { auth, db } from '../firebase';
 import { doc, Firestore, setDoc } from '@firebase/firestore';
+import Modal from '../components/Modal.vue';
 
 const router = useRouter();
 const store = useUserStore();
+const userDataStore = useUserDataStore();
 
 const titleShow = ref(true);
 const messageShow = ref(false);
 const showButtons = ref(false);
 const showLoginForm = ref(false);
+const showModal = ref(userDataStore.showModal);
 const user = ref(store.user);
 
 const takePicture = async () => {
@@ -35,6 +40,19 @@ const takePicture = async () => {
   if (image) {
     const result = await store.uploadPicture(image);
     console.log(result, 'what result');
+  }
+};
+
+const takeHeroPicture = async () => {
+  const heroImage = await Camera.getPhoto({
+    quality: 100,
+    allowEditing: true,
+    resultType: CameraResultType.Base64,
+  });
+
+  if (heroImage) {
+    const result = await userDataStore.uploadHeroPicture(heroImage);
+    console.log(result, 'upload Hero Picture result');
   }
 };
 
@@ -64,6 +82,13 @@ const toggleRegisterForm = () => {
     name: 'register',
   });
 };
+
+function toggleModal() {
+  showModal.value = !showModal.value;
+  console.log(showModal.value, 'toggle?');
+}
+
+function sendEmail() {}
 </script>
 
 <template>
@@ -101,14 +126,26 @@ const toggleRegisterForm = () => {
       class="w-full h-full text-black dark:text-white flex flex-col justify-center items-center font-headline overflow-scroll"
       v-if="store.user"
     >
+      <modal :showModal="showModal" @closeModal="toggleModal" />
       <div class="h-full w-full flex flex-col">
         <!-- profile pic -->
         <div class="w-full h-20 relative">
           <img
-            src="https://geekflare.com/wp-content/uploads/2019/12/code-review-tools.png"
+            v-if="userDataStore.heroImage"
+            :src="userDataStore.heroImage"
             class="object-cover h-full w-full"
             alt=""
+            @click="takeHeroPicture"
           />
+          <div
+            v-else
+            class="bg-gray-200 dark:bg-gray-400 w-full h-full flex items-center justify-center"
+          >
+            <i
+              @click="takeHeroPicture"
+              class="fa-solid fa-plus text-2xl p-2 text-black"
+            ></i>
+          </div>
           <div class="w-20 h-20 rounded-full absolute -bottom-10 left-10">
             <div class="w-full h-full relative rounded-full">
               <img
@@ -140,22 +177,21 @@ const toggleRegisterForm = () => {
         </div>
         <div class="w-full h-64 flex flex-col px-6">
           <div class="w-full flex justify-end py-4">
-            <div
+            <!-- <a :href="`mailto:${user.email}`"> -->
+            <button
               class="h-8 w-8 bg-black dark:bg-white rounded-full flex items-center justify-center"
             >
               <i class="fa-solid text-white dark:text-black fa-envelope"></i>
-            </div>
+            </button>
+            <!-- </a> -->
           </div>
           <div class="w-full h-64">
             <div class="w-fill flex flex-col">
-              <h1
-                class="text-lg font-boldHeadline"
-                v-if="store.user.displayName"
-              >
-                {{ store.user.displayName }}
+              <h1 class="text-lg font-boldHeadline" v-if="user.displayName">
+                {{ user.displayName }}
               </h1>
               <h1 class="text-lg font-boldHeadline" v-else>
-                {{ store.user.name }}
+                {{ user.name }}
               </h1>
               <div class="flex my-1 text-sm">
                 <span class="flex items-center"
@@ -168,7 +204,12 @@ const toggleRegisterForm = () => {
                 >
               </div>
               <div class="">
-                <p>Loves Doughnuts, Writes Code.</p>
+                <p v-if="userDataStore.headerLine" @click="toggleModal">
+                  {{ userDataStore.headerLine }}
+                </p>
+                <p v-else @click="toggleModal">
+                  Loves Doughnuts, Writes Code. Click to add yours..
+                </p>
               </div>
               <div class="w-full flex my-1 flex-wrap">
                 <!-- PILLS -->
