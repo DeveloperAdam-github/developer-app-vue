@@ -3,9 +3,10 @@ import {
   getAuth,
   initializeAuth,
   createUserWithEmailAndPassword,
+  signInWithPopup,
 } from 'firebase/auth';
 import { defineStore } from 'pinia';
-import { db, auth, app } from '../firebase';
+import { db, auth, app, storage, provider } from '../firebase';
 import {
   addDoc,
   collection,
@@ -14,6 +15,12 @@ import {
   getFirestore,
 } from 'firebase/firestore';
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  uploadString,
+} from 'firebase/storage';
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -29,6 +36,18 @@ export const useUserStore = defineStore({
       await setDoc(doc(db, 'uniqueLinks', data.email), {
         uniqueLink: data.uid,
       });
+    },
+    updateProfilePicture(imageUrl) {
+      updateProfile(auth.currentUser, {
+        photoURL: imageUrl,
+      })
+        .then(() => {
+          this.user.imageUrl = imageUrl;
+          console.log(this.user.imageUrl, 'IS THE DISPLAY IMAGE URL UPDATED🔥');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     async updateDisplayNameOnRegister(displayName) {
       const currentUser = await FirebaseAuthentication.getCurrentUser();
@@ -91,14 +110,62 @@ export const useUserStore = defineStore({
       this.uniqueLink = result.user.uid;
     },
     async signInWithGoogle() {
+      // if (Capacitor.isNativePlatform()) {
+      //   const response = await GoogleAuth.signIn();
+      //   console.log(response, 'the resposne if it wroks?');
+      //   this.user = response;
+      // } else {
+      //   signInWithPopup(auth, provider).then((result) => {
+      //     console.log(result);
+      //     this.user = result.user;
+      //     this.writeUserData(result.user);
+      //   });
+      // }
+      // signInWithPopup(auth, provider)
+      //   .then((result) => {
+      //     console.log(result);
+      //     this.user = result.user;
+      //     this.writeUserData(result.user);
+      //   })
+      //   .catch((error) => {
+      //     console.log(error, 'why google no work');
+      //   });
+      // DOESNT WORK???
+      console.log('BEFORE BEFORE firebase google result???????');
       const result = await FirebaseAuthentication.signInWithGoogle();
-      console.log(result);
+      console.log(result, 'firebase google result???????');
       this.user = result.user;
       await this.writeUserData(result.user);
     },
     logout() {
       this.user = null;
       console.log(this.user, 'hello clicked');
+    },
+    async uploadPicture(image) {
+      // console.log(image, 'whats image?');
+      const user = auth.currentUser;
+      const path = `uploads/${user.uid}/profile`;
+      const storageRef = ref(storage, path);
+      // console.log(user, ' the user');
+      // console.log(path, 'the path?');
+      // console.log(storageRef, 'the storage ref?');
+
+      try {
+        await uploadString(storageRef, image.base64String, 'base64');
+        const imageUrl = await getDownloadURL(storageRef);
+        const userDocRef = doc(db, `users/${user.uid}`);
+
+        console.log(imageUrl, 'image Url');
+        console.log(userDocRef, 'the user doc ref?');
+
+        await setDoc(userDocRef, {
+          imageUrl,
+        });
+        this.updateProfilePicture(imageUrl);
+        return true;
+      } catch (error) {
+        console.log(error, 'errorrrrrr');
+      }
     },
     clearErrorMessage() {
       console.log('clearing the error message');

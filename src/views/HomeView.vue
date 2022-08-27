@@ -12,6 +12,9 @@ import { onMounted, ref } from 'vue-demi';
 import { useRouter } from 'vue-router';
 import LoginForm from '../components/Forms/LoginForm.vue';
 import { useUserStore } from '../stores/user';
+import { Camera, CameraResultType } from '@capacitor/camera';
+import { auth, db } from '../firebase';
+import { doc, Firestore, setDoc } from '@firebase/firestore';
 
 const router = useRouter();
 const store = useUserStore();
@@ -21,6 +24,19 @@ const messageShow = ref(false);
 const showButtons = ref(false);
 const showLoginForm = ref(false);
 const user = ref(store.user);
+
+const takePicture = async () => {
+  const image = await Camera.getPhoto({
+    quality: 100,
+    allowEditing: true,
+    resultType: CameraResultType.Base64,
+  });
+
+  if (image) {
+    const result = await store.uploadPicture(image);
+    console.log(result, 'what result');
+  }
+};
 
 onMounted(() => {
   setTimeout(() => {
@@ -38,11 +54,6 @@ onMounted(() => {
 });
 
 const toggleLoginForm = () => {
-  // showButtons.value = false;
-  // setTimeout(() => {
-  //   showLoginForm.value = true;
-  // }, 300)
-  // console.log(showLoginForm.value);
   router.push({
     name: 'login',
   });
@@ -101,17 +112,24 @@ const toggleRegisterForm = () => {
           <div class="w-20 h-20 rounded-full absolute -bottom-10 left-10">
             <div class="w-full h-full relative rounded-full">
               <img
-                v-if="store.user.photoUrl"
-                :src="store.user.photoUrl"
-                class="full w-full rounded-full"
+                v-if="store.user.photoURL"
+                :src="store.user.photoURL"
+                @click="takePicture"
+                class="full w-full h-full rounded-full object-cover"
                 alt=""
               />
               <div
                 v-else
                 class="flex items-center justify-center h-full w-full absolute top-0 rounded-full dark:bg-gray-200 bg-black"
               >
+                <div class="relative">
+                  <div
+                    class="absolute -bottom-12 left-7 rounded-full h-6 w-6 bg-green-500"
+                  ></div>
+                </div>
                 <i
-                  class="fa-solid fa-plus text-xl text-white dark:text-black hover:text-3xl"
+                  @click="takePicture"
+                  class="fa-solid fa-plus text-xl p-2 text-white dark:text-black"
                 ></i>
               </div>
             </div>
@@ -203,7 +221,7 @@ const toggleRegisterForm = () => {
               <div class="w-full h-full overflow-scroll my-2 flex flex-col">
                 <div class="flex flex-col items-center my-4">
                   <img
-                    src="../assets/images/screenshot.jpeg"
+                    src="https://techcrunch.com/wp-content/uploads/2020/11/GettyImages-1211125072.jpg?w=730&crop=1"
                     class="w-full h-44 object-cover object-center"
                     alt=""
                   />

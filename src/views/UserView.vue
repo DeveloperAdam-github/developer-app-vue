@@ -104,7 +104,7 @@
               <div class="w-full h-full overflow-scroll my-2 flex flex-col">
                 <div class="flex flex-col items-center my-4">
                   <img
-                    src="../assets/images/screenshot.jpeg"
+                    src="https://techcrunch.com/wp-content/uploads/2020/11/GettyImages-1211125072.jpg?w=730&crop=1"
                     class="w-full h-44 object-cover object-center"
                     alt=""
                   />

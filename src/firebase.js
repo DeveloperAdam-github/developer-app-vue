@@ -10,6 +10,9 @@ import {
 } from 'firebase/auth';
 import { Capacitor } from '@capacitor/core';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
+// import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -30,7 +33,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const analytics = getAnalytics(app);
-// const auth = getAuth();
+const storage = getStorage(app);
 const provider = new GoogleAuthProvider();
 
 function whichAuth() {
@@ -39,8 +42,14 @@ function whichAuth() {
     auth = initializeAuth(app, {
       persistence: indexedDBLocalPersistence,
     });
+    // GoogleAuth.initialize();
   } else {
     auth = getAuth(app);
+    // GoogleAuth.initialize({
+    //   clientId: '1:89637228341:web:1acd52904225ca7413067c',
+    //   scopes: ['profile', 'email'],
+    //   grantOfflineAccess: true,
+    // });
   }
   return auth;
 }
@@ -49,4 +58,4 @@ const auth = whichAuth();
 
 console.log(auth, 'this is aauth?');
 
-export { provider, analytics, auth, db, app };
+export { provider, analytics, auth, db, app, storage };
