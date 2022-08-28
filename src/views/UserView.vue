@@ -17,7 +17,7 @@ const loadUserData = onMounted(() => {
 
 <template>
   <div
-    v-if="userData"
+    v-if="store.isLoading === false"
     class="h-full w-full flex justify-center items-center text-black dark:text-white"
   >
     <div
@@ -59,7 +59,9 @@ const loadUserData = onMounted(() => {
             <div
               class="h-8 w-8 bg-black dark:bg-white rounded-full flex items-center justify-center"
             >
-              <i class="fa-solid text-white dark:text-black fa-envelope"></i>
+              <a :href="`mailto:${store.email}`">
+                <i class="fa-solid text-white dark:text-black fa-envelope"></i>
+              </a>
             </div>
           </div>
           <div class="w-full h-64">
@@ -79,86 +81,72 @@ const loadUserData = onMounted(() => {
                 >
               </div>
               <div class="">
-                <p>Loves Doughnuts, Writes Code.</p>
+                <p>{{ store.headerLine }}</p>
               </div>
               <div class="w-full flex my-1 flex-wrap">
                 <!-- PILLS -->
                 <div
+                  v-if="store.pills && store.pills.length > 0"
+                  v-for="(pill, index) in store.pills"
+                  :key="index"
                   class="h-6 text-xs font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2"
                 >
-                  FullStack Developer
-                </div>
-                <div
-                  class="h-6 text-xs font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2"
-                >
-                  Vue Wizard
-                </div>
-                <div
-                  class="h-6 text-xs font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2"
-                >
-                  Freelancer
-                </div>
-                <div
-                  class="h-6 text-xs font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2"
-                >
-                  CEO
-                </div>
-                <div
-                  class="h-6 text-xs font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2"
-                >
-                  Javascript expert
+                  {{ pill }}
                 </div>
               </div>
-              <!-- ICONS -->
+              <!-- ICONS && SOCIALS -->
               <div class="flex mt-1 flex-wrap">
                 <div
+                  v-if="store.socials && store.socials.length > 0"
+                  v-for="(social, index) in store.socials"
+                  :key="index"
                   class="h-7 mr-2 w-7 rounded-full dark:bg-white bg-black flex items-center justify-center"
                 >
-                  <i class="fa-brands fa-github text-white dark:text-black"></i>
-                </div>
-                <div
-                  class="h-7 mr-2 w-7 rounded-full dark:bg-white bg-black flex items-center justify-center"
-                >
-                  <i
-                    class="fa-brands fa-instagram text-white dark:text-black"
-                  ></i>
-                </div>
-                <div
-                  class="h-7 mr-2 w-7 rounded-full dark:bg-white bg-black flex items-center justify-center"
-                >
-                  <i
-                    class="fa-brands fa-linkedin text-white dark:text-black"
-                  ></i>
-                </div>
-                <div
-                  class="h-7 mr-2 w-7 rounded-full dark:bg-white bg-black flex items-center justify-center"
-                >
-                  <i class="fa-solid fa-plus text-white dark:text-black"></i>
+                  <a :href="social.link">
+                    <i
+                      :class="
+                        social.platform === 'github'
+                          ? 'fa-github'
+                          : social.platform === 'instagram'
+                          ? 'fa-instagram'
+                          : social.platform === 'facebook'
+                          ? 'fa-facebook'
+                          : social.platform === 'linkedin'
+                          ? 'fa-linkedin'
+                          : social.platform === 'twitter'
+                          ? 'fa-twitter'
+                          : social.platform === 'tiktok'
+                          ? 'fa-tiktok'
+                          : ''
+                      "
+                      class="fa-brands text-white dark:text-black"
+                    ></i>
+                  </a>
                 </div>
               </div>
 
               <!-- PROJECT LISTS -->
               <div class="w-full h-full overflow-scroll my-2 flex flex-col">
-                <div class="flex flex-col items-center my-4">
-                  <img
-                    src="https://techcrunch.com/wp-content/uploads/2020/11/GettyImages-1211125072.jpg?w=730&crop=1"
-                    class="w-full h-44 object-cover object-center"
-                    alt=""
-                  />
-                  <p class="px-2 text-sm text-black dark:text-white mt-1">
-                    Worldie - Built in Vue and deployed to the app store.
-                  </p>
-                </div>
-
-                <div class="flex flex-col items-center my-4">
-                  <img
-                    src="https://techcrunch.com/wp-content/uploads/2020/11/GettyImages-1211125072.jpg?w=730&crop=1"
-                    class="w-full h-44 object-cover object-center"
-                    alt=""
-                  />
-                  <p class="px-2 text-sm text-black dark:text-white mt-1">
-                    Amazon - Call me Jeff.
-                  </p>
+                <div
+                  class="flex flex-col items-center my-4"
+                  v-for="(project, index) in store.projects"
+                  :key="index"
+                >
+                  <a :href="project.link" class="w-full">
+                    <img
+                      :src="project.imageUrl"
+                      class="w-full h-44 object-cover object-center"
+                      alt=""
+                    />
+                  </a>
+                  <div class="px-2 text-sm text-black dark:text-white mt-1">
+                    <p>
+                      <span class="font-headlineBold font-bold text-base">{{
+                        project.projectName
+                      }}</span>
+                      - {{ project.description }}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -166,5 +154,13 @@ const loadUserData = onMounted(() => {
         </div>
       </div>
     </div>
+  </div>
+  <div
+    v-else
+    class="h-full w-full flex justify-center items-center text-black dark:text-white flex-col"
+  >
+    <h1 class="font-boldHeadline text-2xl my-10">DeveloperApp</h1>
+    <h1 class="text-base">Loading users profile...</h1>
+    <i class="fa-solid fa-spinner animate-spin text-blue-500 text-lg"></i>
   </div>
 </template>

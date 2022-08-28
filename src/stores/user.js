@@ -118,8 +118,10 @@ export const useUserStore = defineStore({
       }
     },
     logout() {
+      const userDataStore = useUserDataStore();
       this.user = null;
       console.log(this.user, 'hello clicked');
+      userDataStore.resetData();
     },
     async uploadPicture(image) {
       // console.log(image, 'whats image?');

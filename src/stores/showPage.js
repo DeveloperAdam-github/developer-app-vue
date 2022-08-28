@@ -18,11 +18,15 @@ import {
 export const useShowPageStore = defineStore({
   id: 'showPage',
   state: () => ({
+    isLoading: true,
     imageUrl: '',
     photoUrl: '',
     heroImage: '',
     headerLine: '',
     displayName: '',
+    pills: [],
+    socials: [],
+    projects: [],
     showModal: false,
   }),
   getters: {},
@@ -38,6 +42,18 @@ export const useShowPageStore = defineStore({
         this.imageUrl = docSnap.data().imageUrl;
         this.photoUrl = docSnap.data().photoUrl;
         this.displayName = docSnap.data().displayName;
+        if (docSnap.data().pills) {
+          this.pills = docSnap.data().pills;
+        }
+        if (docSnap.data().socials) {
+          this.socials = docSnap.data().socials;
+        }
+        if (docSnap.data().projects) {
+          this.projects = docSnap.data().projects;
+        }
+        this.isLoading = false;
+
+        console.log(this.isLoading, 'why this no update?');
       } else {
         // doc.data() will be undefined in this case
         console.log('No such document!');

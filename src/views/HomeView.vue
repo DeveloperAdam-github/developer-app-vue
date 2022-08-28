@@ -29,6 +29,7 @@ const showButtons = ref(false);
 const showLoginForm = ref(false);
 const showModal = ref(userDataStore.showModal);
 const user = ref(store.user);
+const modalType = ref('');
 
 const takePicture = async () => {
   const image = await Camera.getPhoto({
@@ -83,9 +84,11 @@ const toggleRegisterForm = () => {
   });
 };
 
-function toggleModal() {
-  showModal.value = !showModal.value;
-  console.log(showModal.value, 'toggle?');
+function toggleModal(value) {
+  showModal.value = true;
+  userDataStore.toggleModalView(true);
+  modalType.value = value;
+  // console.log(showModal.value, 'toggle?');
 }
 
 function sendEmail() {}
@@ -126,7 +129,11 @@ function sendEmail() {}
       class="w-full h-full text-black dark:text-white flex flex-col justify-center items-center font-headline overflow-scroll"
       v-if="store.user"
     >
-      <modal :showModal="showModal" @closeModal="toggleModal" />
+      <modal
+        :showModal="userDataStore.showModal"
+        :modalType="modalType"
+        @closeModal="toggleModal"
+      />
       <div class="h-full w-full flex flex-col">
         <!-- profile pic -->
         <div class="w-full h-20 relative">
@@ -179,6 +186,7 @@ function sendEmail() {}
           <div class="w-full flex justify-end py-4">
             <!-- <a :href="`mailto:${user.email}`"> -->
             <button
+              @click="toggleModal('email')"
               class="h-8 w-8 bg-black dark:bg-white rounded-full flex items-center justify-center"
             >
               <i class="fa-solid text-white dark:text-black fa-envelope"></i>
@@ -204,64 +212,67 @@ function sendEmail() {}
                 >
               </div>
               <div class="">
-                <p v-if="userDataStore.headerLine" @click="toggleModal">
+                <p
+                  v-if="userDataStore.headerLine"
+                  @click="toggleModal('header')"
+                >
                   {{ userDataStore.headerLine }}
                 </p>
-                <p v-else @click="toggleModal">
+                <p v-else @click="toggleModal('header')">
                   Loves Doughnuts, Writes Code. Click to add yours..
                 </p>
               </div>
               <div class="w-full flex my-1 flex-wrap">
                 <!-- PILLS -->
                 <div
+                  v-if="userDataStore.pills && userDataStore.pills.length > 0"
+                  v-for="(pill, index) in userDataStore.pills"
+                  :key="index"
                   class="h-6 text-xs font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2"
                 >
-                  FullStack Developer
+                  {{ pill }}
                 </div>
                 <div
+                  @click="toggleModal('pillForm')"
                   class="h-6 text-xs font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2"
                 >
-                  Vue Wizard
-                </div>
-                <div
-                  class="h-6 text-xs font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2"
-                >
-                  Freelancer
-                </div>
-                <div
-                  class="h-6 text-xs font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2"
-                >
-                  CEO
-                </div>
-                <div
-                  class="h-6 text-xs font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2"
-                >
-                  Javascript expert
+                  <i class="fa-solid fa-plus text-white dark:text-black"></i>
                 </div>
               </div>
               <!-- ICONS -->
               <div class="flex mt-1 flex-wrap">
                 <div
+                  v-if="
+                    userDataStore.socials && userDataStore.socials.length > 0
+                  "
+                  v-for="(social, index) in userDataStore.socials"
+                  :key="index"
                   class="h-7 mr-2 w-7 rounded-full dark:bg-white bg-black flex items-center justify-center"
                 >
-                  <i class="fa-brands fa-github text-white dark:text-black"></i>
+                  <a :href="social.link">
+                    <i
+                      :class="
+                        social.platform === 'github'
+                          ? 'fa-github'
+                          : social.platform === 'instagram'
+                          ? 'fa-instagram'
+                          : social.platform === 'facebook'
+                          ? 'fa-facebook'
+                          : social.platform === 'linkedin'
+                          ? 'fa-linkedin'
+                          : social.platform === 'twitter'
+                          ? 'fa-twitter'
+                          : social.platform === 'tiktok'
+                          ? 'fa-tiktok'
+                          : ''
+                      "
+                      class="fa-brands text-white dark:text-black"
+                    ></i>
+                  </a>
                 </div>
                 <div
                   class="h-7 mr-2 w-7 rounded-full dark:bg-white bg-black flex items-center justify-center"
-                >
-                  <i
-                    class="fa-brands fa-instagram text-white dark:text-black"
-                  ></i>
-                </div>
-                <div
-                  class="h-7 mr-2 w-7 rounded-full dark:bg-white bg-black flex items-center justify-center"
-                >
-                  <i
-                    class="fa-brands fa-linkedin text-white dark:text-black"
-                  ></i>
-                </div>
-                <div
-                  class="h-7 mr-2 w-7 rounded-full dark:bg-white bg-black flex items-center justify-center"
+                  @click="toggleModal('socialLink')"
                 >
                   <i class="fa-solid fa-plus text-white dark:text-black"></i>
                 </div>
@@ -270,25 +281,43 @@ function sendEmail() {}
               <!-- PROJECT LISTS -->
               <div class="w-full h-full overflow-scroll my-2 flex flex-col">
                 <div class="flex flex-col items-center my-4">
-                  <img
-                    src="https://techcrunch.com/wp-content/uploads/2020/11/GettyImages-1211125072.jpg?w=730&crop=1"
-                    class="w-full h-44 object-cover object-center"
-                    alt=""
-                  />
-                  <p class="px-2 text-sm text-black dark:text-white mt-1">
-                    Worldie - Built in Vue and deployed to the app store.
-                  </p>
-                </div>
+                  <div
+                    class="bg-gray-400 w-full h-44 flex items-center justify-center"
+                  >
+                    <button class="blue-btn" @click="toggleModal('project')">
+                      <p>Add new Project</p>
+                    </button>
+                  </div>
 
-                <div class="flex flex-col items-center my-4">
-                  <img
+                  <div
+                    class="flex flex-col items-center my-4"
+                    v-for="(project, index) in userDataStore.projects"
+                    :key="index"
+                  >
+                    <a :href="project.link" class="w-full">
+                      <img
+                        :src="project.imageUrl"
+                        class="w-full h-44 object-cover object-center"
+                        alt=""
+                      />
+                    </a>
+                    <div class="px-2 text-sm text-black dark:text-white mt-1">
+                      <p>
+                        <span class="font-headlineBold font-bold text-base">{{
+                          project.projectName
+                        }}</span>
+                        - {{ project.description }}
+                      </p>
+                    </div>
+                  </div>
+                  <!-- <img
                     src="https://techcrunch.com/wp-content/uploads/2020/11/GettyImages-1211125072.jpg?w=730&crop=1"
                     class="w-full h-44 object-cover object-center"
                     alt=""
                   />
                   <p class="px-2 text-sm text-black dark:text-white mt-1">
                     Amazon - Call me Jeff.
-                  </p>
+                  </p> -->
                 </div>
               </div>
             </div>
