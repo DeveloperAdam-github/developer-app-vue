@@ -36,7 +36,7 @@ export const useUserDataStore = defineStore({
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        console.log('Document data:', docSnap.data());
+        // console.log('Document data:', docSnap.data());
         this.heroImage = docSnap.data().heroImage;
         this.headerLine = docSnap.data().headerLine;
         this.email = docSnap.data().email;
@@ -51,7 +51,7 @@ export const useUserDataStore = defineStore({
         }
       } else {
         // doc.data() will be undefined in this case
-        console.log('No such document!');
+        // console.log('No such document!');
       }
     },
     async uploadHeroPicture(image) {
@@ -59,15 +59,15 @@ export const useUserDataStore = defineStore({
       const path = `uploads/${user.uid}/heroImage`;
       const storageRef = ref(storage, path);
 
-      console.log(user, 'can we see the uid here???');
+      // console.log(user, 'can we see the uid here???');
 
       try {
         await uploadString(storageRef, image.base64String, 'base64');
         const imageUrl = await getDownloadURL(storageRef);
         const userDocRef = doc(db, `users/${user.uid}`);
 
-        console.log(imageUrl, 'image Url');
-        console.log(userDocRef, 'the user doc ref?');
+        // console.log(imageUrl, 'image Url');
+        // console.log(userDocRef, 'the user doc ref?');
 
         await setDoc(
           userDocRef,

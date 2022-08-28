@@ -37,15 +37,37 @@ const takePicture = async () => {
     allowEditing: true,
     resultType: CameraResultType.Base64,
   });
-
-  console.log(image, 'can I use this?');
-
   imageRef.value = image;
-
-  console.log(imageRef.value, 'the image ref value?');
 };
 
-console.log(showModalRef, 'does this change?');
+function storeUploadHeaderLine(headerLine) {
+  store.uploadHeaderLine(headerLine);
+  this.headerLine = '';
+}
+
+function storeUploadEmail(email) {
+  store.uploadEmail(email);
+  this.email = '';
+}
+
+function storeUploadPill(pill) {
+  store.uploadPill(pill);
+  this.pill = '';
+}
+
+function storeUploadSocial(social, platform) {
+  store.uploadSocial(social, platform);
+  this.social = '';
+  this.platform = '';
+}
+
+function storeUploadProject(projectName, link, description, imageRef) {
+  store.uploadProject(projectName, link, description, imageRef);
+  this.projectName = '';
+  this.link = '';
+  this.description = '';
+  this.imageRef = '';
+}
 </script>
 
 <template>
@@ -60,10 +82,11 @@ console.log(showModalRef, 'does this change?');
       <!-- HEADERLINE -->
       <form
         v-if="modalTypeRef === 'header'"
-        @submit.prevent="store.uploadHeaderLine(headerLine)"
+        @submit.prevent="storeUploadHeaderLine(headerLine)"
         class="w-full my-2 flex flex-col items-center"
       >
         <input
+          required
           v-model="headerLine"
           type="text"
           placeholder="Add in a short bio here"
@@ -76,10 +99,11 @@ console.log(showModalRef, 'does this change?');
       <!-- EMAIL  -->
       <form
         v-if="modalTypeRef === 'email'"
-        @submit.prevent="store.uploadEmail(email)"
+        @submit.prevent="storeUploadEmail(email)"
         class="w-full my-2 flex flex-col items-center"
       >
         <input
+          required
           v-model="email"
           type="text"
           placeholder="Enter email address.."
@@ -92,10 +116,11 @@ console.log(showModalRef, 'does this change?');
       <!-- PILL -->
       <form
         v-if="modalTypeRef === 'pillForm'"
-        @submit.prevent="store.uploadPill(pill)"
+        @submit.prevent="storeUploadPill(pill)"
         class="w-full my-2 flex flex-col items-center"
       >
         <input
+          required
           v-model="pill"
           type="text"
           placeholder="Add a pill value"
@@ -108,10 +133,16 @@ console.log(showModalRef, 'does this change?');
       <!-- SOCIAL LINK -->
       <form
         v-if="modalTypeRef === 'socialLink'"
-        @submit.prevent="store.uploadSocial(social, platform)"
+        @submit.prevent="storeUploadSocial(social, platform)"
         class="w-full my-2 flex flex-col items-center"
       >
-        <select v-model="platform" name="" id="" class="p-1 w-full text-black">
+        <select
+          required
+          v-model="platform"
+          name=""
+          id=""
+          class="p-1 w-full text-black"
+        >
           <option selected disabled>Select a platform</option>
           <option value="facebook">Facebook</option>
           <option value="instagram">Instagram</option>
@@ -121,6 +152,7 @@ console.log(showModalRef, 'does this change?');
           <option value="tiktok">TikTok</option>
         </select>
         <input
+          required
           v-model="social"
           type="text"
           placeholder="Add a social link"
@@ -134,11 +166,12 @@ console.log(showModalRef, 'does this change?');
       <form
         v-if="modalTypeRef === 'project'"
         @submit.prevent="
-          store.uploadProject(projectName, link, description, imageRef)
+          storeUploadProject(projectName, link, description, imageRef)
         "
         class="w-full my-2 flex flex-col items-center"
       >
         <input
+          required
           v-model="projectName"
           type="text"
           placeholder="Project Name"
@@ -146,6 +179,7 @@ console.log(showModalRef, 'does this change?');
           max="14"
         />
         <input
+          required
           v-model="link"
           type="text"
           placeholder="Add a link to your project"
@@ -153,6 +187,7 @@ console.log(showModalRef, 'does this change?');
           max="14"
         />
         <input
+          required
           v-model="description"
           type="text"
           placeholder="A short description"
