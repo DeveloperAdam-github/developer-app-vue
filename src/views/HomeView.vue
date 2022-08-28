@@ -222,10 +222,12 @@ function sendEmail() {}
                   Loves Doughnuts, Writes Code. Click to add yours..
                 </p>
               </div>
-              <div class="w-full flex my-1 flex-wrap">
+              <div
+                class="w-full flex my-1 flex-wrap"
+                v-if="userDataStore.pills && userDataStore.pills.length > 0"
+              >
                 <!-- PILLS -->
                 <div
-                  v-if="userDataStore.pills && userDataStore.pills.length > 0"
                   v-for="(pill, index) in userDataStore.pills"
                   :key="index"
                   class="h-6 text-xs font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2"
@@ -240,14 +242,14 @@ function sendEmail() {}
                 </div>
               </div>
               <!-- ICONS -->
-              <div class="flex mt-1 flex-wrap">
+              <div
+                class="flex mt-1 flex-wrap"
+                v-if="userDataStore.socials && userDataStore.socials.length > 0"
+              >
                 <div
-                  v-if="
-                    userDataStore.socials && userDataStore.socials.length > 0
-                  "
                   v-for="(social, index) in userDataStore.socials"
                   :key="index"
-                  class="h-7 mr-2 w-7 rounded-full dark:bg-white bg-black flex items-center justify-center"
+                  class="h-7 m-1 w-7 rounded-full dark:bg-white bg-black flex items-center justify-center"
                 >
                   <a :href="social.link">
                     <i

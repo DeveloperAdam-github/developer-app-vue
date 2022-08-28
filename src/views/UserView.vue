@@ -90,10 +90,12 @@ const loadUserData = onMounted(() => {
               <div class="text-base xl:text-xl">
                 <p>{{ store.headerLine }}</p>
               </div>
-              <div class="w-full flex my-1 flex-wrap xl:m-4">
+              <div
+                class="w-full flex my-1 flex-wrap xl:m-4"
+                v-if="store.pills && store.pills.length > 0"
+              >
                 <!-- PILLS -->
                 <div
-                  v-if="store.pills && store.pills.length > 0"
                   v-for="(pill, index) in store.pills"
                   :key="index"
                   class="h-6 xl:h-10 xl:text-lg xl:rounded-3xl xl:px-4 text-xs font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2"
@@ -102,12 +104,14 @@ const loadUserData = onMounted(() => {
                 </div>
               </div>
               <!-- ICONS && SOCIALS -->
-              <div class="flex mt-1 flex-wrap">
+              <div
+                class="flex mt-1 flex-wrap"
+                v-if="store.socials && store.socials.length > 0"
+              >
                 <div
-                  v-if="store.socials && store.socials.length > 0"
                   v-for="(social, index) in store.socials"
                   :key="index"
-                  class="h-7 mr-2 w-7 xl:h-14 xl:w-14 xl:mx-4 rounded-full dark:bg-white bg-black flex items-center justify-center"
+                  class="h-7 m-1 w-7 xl:h-14 xl:w-14 xl:mx-4 rounded-full dark:bg-white bg-black flex items-center justify-center"
                 >
                   <a :href="social.link">
                     <i
