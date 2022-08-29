@@ -59,15 +59,15 @@ const submitForm = () => {
 
 <template>
   <div
-    class="flex relative flex-col p-8 justify-center items-center text-black dark:text-white"
+    class="flex relative w-full flex-col p-8 justify-center items-center text-black dark:text-white"
   >
-    <div class="w-full h-84 overflow-hidden">
+    <div class="w-full flex justify-center h-84 overflow-hidden">
       <transition name="fade">
         <form
           @submit.prevent="submitForm"
           v-if="showEmailForm"
           action=""
-          class="w-full max-w-xl p-4 flex flex-col justify-center items-center"
+          class="w-full max-w-sm p-4 flex flex-col justify-center items-center"
         >
           <label for="name" class="w-full text-left text-base font-headline"
             >Name</label

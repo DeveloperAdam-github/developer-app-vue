@@ -22,11 +22,17 @@ import { signInWithPopup, getAuth, updateProfile } from 'firebase/auth';
 import { app, auth, db } from './firebase';
 import { useUserStore } from './stores/user';
 import { useRoute, useRouter } from 'vue-router';
+import { useUserDataStore } from './stores/userData';
+import Modal from './components/Modal.vue';
 
 const store = useMainStore();
 const userStore = useUserStore();
+const userDataStore = useUserDataStore();
 const showNav = ref(false);
 const showToast = ref(false);
+const confirmDelete = ref(false);
+const showModal = ref(userDataStore.showModal);
+const modalType = ref('');
 const route = ref(useRouter());
 
 function toggleNav(value) {
@@ -36,6 +42,13 @@ function toggleNav(value) {
 
 function logoutUser() {
   userStore.logout();
+}
+
+function toggleModal(value) {
+  showModal.value = true;
+  userDataStore.toggleModalView(true);
+  modalType.value = value;
+  // console.log(showModal.value, 'toggle?');
 }
 
 function copyLinkToClipboard(value) {
@@ -63,11 +76,17 @@ function copyLinkToClipboard(value) {
     <div class="h-screen w-screen bg-white dark:bg-black relative">
       <div
         :class="showNav ? 'h-96 ' : 'h-0'"
-        class="w-full z-50 top-[10vh] absolute overflow-hidden transition-height duration-500 ease-in-out flex items-center justify-center bg-white text-black dark:text-white dark:bg-black flex flex-col"
+        class="w-full z-50 top-[10vh] absolute overflow-hidden transition-height duration-500 ease-in-out items-center justify-center bg-white text-black dark:text-white dark:bg-black flex flex-col"
       >
-        The navbar is here, wont be many links :)
-        <p class="my-4" @click="logoutUser">LOGOUT</p>
-        <input type="text" placeholder="Text input paste here..." />
+        <button class="blue-btn" @click="logoutUser">LOGOUT</button>
+        <button class="blue-btn bg-red-500 my-8" @click="toggleModal('delete')">
+          Delete Account
+        </button>
+        <modal
+          :showModal="userDataStore.showModal"
+          :modalType="modalType"
+          @closeModal="toggleModal"
+        />
       </div>
       <navbar
         v-if="route.currentRoute.name !== 'user'"
@@ -84,7 +103,7 @@ function copyLinkToClipboard(value) {
           <component :is="Component"></component>
         </transition>
         <div
-          class="toast w-full toast-center transition-height ease-in-out duration-700"
+          class="toast w-full max-w-md toast-center transition-height ease-in-out duration-700"
           :class="showToast ? 'h-32' : 'h-0 -bottom-10'"
         >
           <div class="alert alert-success text-white font-boldHeadline">

@@ -28,9 +28,10 @@ const props = defineProps({
 });
 </script>
 <template>
-  <nav class="w-full p-4 flex justify-between items-end z-50 relative">
+  <nav class="w-full p-4 xl:p-8 flex justify-between items-end z-50 relative">
     <i
-      class="fa-solid fa-bars text-xl text-black dark:text-white"
+      v-if="store.user"
+      class="fa-solid xl:text-3xl fa-bars text-xl text-black dark:text-white"
       @click="handleChange"
     ></i>
     <!-- && store.user !== null -->
@@ -38,7 +39,7 @@ const props = defineProps({
       <i
         v-if="store.user"
         :class="props.showToast ? 'text-blue-500 dark:text-blue-500' : ''"
-        class="fa-solid fa-link text-xl dark:text-white"
+        class="fa-solid fa-link text-xl dark:text-white xl:text-3xl"
         @click="copy"
       ></i>
     </div>

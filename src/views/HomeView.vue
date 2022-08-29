@@ -136,7 +136,7 @@ function sendEmail() {}
       />
       <div class="h-full w-full flex flex-col">
         <!-- profile pic -->
-        <div class="w-full h-20 relative">
+        <div class="w-full h-20 xl:h-72 relative">
           <img
             v-if="userDataStore.heroImage"
             :src="userDataStore.heroImage"
@@ -153,7 +153,9 @@ function sendEmail() {}
               class="fa-solid fa-plus text-2xl p-2 text-black"
             ></i>
           </div>
-          <div class="w-20 h-20 rounded-full absolute -bottom-10 left-10">
+          <div
+            class="w-20 h-20 xl:h-44 xl:w-44 rounded-full absolute -bottom-10 left-10 xl:-bottom-20"
+          >
             <div class="w-full h-full relative rounded-full">
               <img
                 v-if="user.imageUrl"
@@ -182,26 +184,31 @@ function sendEmail() {}
             </div>
           </div>
         </div>
-        <div class="w-full h-64 flex flex-col px-6">
+        <div class="w-full h-64 xl:h-96 xl:mt-14 flex flex-col px-6">
           <div class="w-full flex justify-end py-4">
             <!-- <a :href="`mailto:${user.email}`"> -->
             <button
               @click="toggleModal('email')"
-              class="h-8 w-8 bg-black dark:bg-white rounded-full flex items-center justify-center"
+              class="h-8 w-8 xl:h-16 xl:w-16 xl:mr-6 bg-black dark:bg-white rounded-full flex items-center justify-center"
             >
-              <i class="fa-solid text-white dark:text-black fa-envelope"></i>
+              <i
+                class="fa-solid text-white xl:text-3xl dark:text-black fa-envelope"
+              ></i>
             </button>
             <!-- </a> -->
           </div>
           <div class="w-full h-64">
             <div class="w-fill flex flex-col">
-              <h1 class="text-lg font-boldHeadline" v-if="user.displayName">
+              <h1
+                class="text-lg font-boldHeadline xl:text-4xl"
+                v-if="user.displayName"
+              >
                 {{ user.displayName }}
               </h1>
-              <h1 class="text-lg font-boldHeadline" v-else>
+              <h1 class="text-lg font-boldHeadline xl:text-4xl" v-else>
                 {{ user.name }}
               </h1>
-              <div class="flex my-1 text-sm">
+              <div class="flex my-1 text-sm xl:text-lg">
                 <span class="flex items-center"
                   ><i class="fa-solid fa-location-dot"></i>
                   <p class="ml-2 font-headline">UK</p></span
@@ -211,7 +218,7 @@ function sendEmail() {}
                   <p class="ml-2 font-headline">Joined, 2022</p></span
                 >
               </div>
-              <div class="">
+              <div class="xl:text-xl">
                 <p
                   v-if="userDataStore.headerLine"
                   @click="toggleModal('header')"
@@ -230,13 +237,13 @@ function sendEmail() {}
                 <div
                   v-for="(pill, index) in userDataStore.pills"
                   :key="index"
-                  class="h-6 text-xs font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2"
+                  class="h-6 text-xs xl:h-10 xl:text-lg xl:rounded-3xl xl:px-4 font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2"
                 >
                   {{ pill }}
                 </div>
                 <div
                   @click="toggleModal('pillForm')"
-                  class="h-6 text-xs font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2"
+                  class="h-6 text-xs font-headline px-2 py-1 bg-black dark:bg-white text-white dark:text-black rounded-xl items-center flex m-1 mx-2 xl:h-10 xl:text-lg xl:rounded-full xl:px-4"
                 >
                   <i class="fa-solid fa-plus text-white dark:text-black"></i>
                 </div>
@@ -249,7 +256,7 @@ function sendEmail() {}
                 <div
                   v-for="(social, index) in userDataStore.socials"
                   :key="index"
-                  class="h-7 m-1 w-7 rounded-full dark:bg-white bg-black flex items-center justify-center"
+                  class="h-7 xl:h-14 xl:w-14 xl:mx-4 m-1 w-7 rounded-full dark:bg-white bg-black flex items-center justify-center"
                 >
                   <a :href="social.link">
                     <i
@@ -268,20 +275,24 @@ function sendEmail() {}
                           ? 'fa-tiktok'
                           : ''
                       "
-                      class="fa-brands text-white dark:text-black"
+                      class="fa-brands xl:text-3xl text-white dark:text-black"
                     ></i>
                   </a>
                 </div>
                 <div
-                  class="h-7 mr-2 w-7 rounded-full dark:bg-white bg-black flex items-center justify-center"
+                  class="h-7 xl:h-14 xl:w-14 xl:mx-4 mr-2 w-7 rounded-full dark:bg-white bg-black flex items-center justify-center"
                   @click="toggleModal('socialLink')"
                 >
-                  <i class="fa-solid fa-plus text-white dark:text-black"></i>
+                  <i
+                    class="fa-solid xl:text-3xl fa-plus text-white dark:text-black"
+                  ></i>
                 </div>
               </div>
 
               <!-- PROJECT LISTS -->
-              <div class="w-full h-full overflow-scroll my-2 flex flex-col">
+              <div
+                class="w-full xl:px-[10%] xl:mt-10 h-full overflow-scroll my-2 flex flex-col"
+              >
                 <div class="flex flex-col items-center my-4">
                   <div
                     class="bg-gray-400 w-full h-44 flex items-center justify-center"
@@ -292,34 +303,29 @@ function sendEmail() {}
                   </div>
 
                   <div
-                    class="flex flex-col items-center my-4"
+                    class="flex flex-col mt-10 w-full items-center my-4"
                     v-for="(project, index) in userDataStore.projects"
                     :key="index"
                   >
                     <a :href="project.link" class="w-full">
                       <img
                         :src="project.imageUrl"
-                        class="w-full h-44 object-cover object-center"
+                        class="w-full xl:h-96 h-44 object-cover object-center"
                         alt=""
                       />
                     </a>
-                    <div class="px-2 text-sm text-black dark:text-white mt-1">
-                      <p>
-                        <span class="font-headlineBold font-bold text-base">{{
-                          project.projectName
-                        }}</span>
+                    <div
+                      class="px-2 xl:px-0 xl:text-2xl text-sm text-black dark:text-white mt-1"
+                    >
+                      <p class="xl:my-4">
+                        <span
+                          class="xl:text-4xl xl:my-4 font-headlineBold font-bold text-base"
+                          >{{ project.projectName }}</span
+                        >
                         - {{ project.description }}
                       </p>
                     </div>
                   </div>
-                  <!-- <img
-                    src="https://techcrunch.com/wp-content/uploads/2020/11/GettyImages-1211125072.jpg?w=730&crop=1"
-                    class="w-full h-44 object-cover object-center"
-                    alt=""
-                  />
-                  <p class="px-2 text-sm text-black dark:text-white mt-1">
-                    Amazon - Call me Jeff.
-                  </p> -->
                 </div>
               </div>
             </div>

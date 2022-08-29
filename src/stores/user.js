@@ -6,6 +6,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signInWithCredential,
+  deleteUser,
 } from 'firebase/auth';
 import { defineStore } from 'pinia';
 import { db, auth, app, storage, provider } from '../firebase';
@@ -122,6 +123,16 @@ export const useUserStore = defineStore({
       this.user = null;
       console.log(this.user, 'hello clicked');
       userDataStore.resetData();
+    },
+    deleteAccount() {
+      const user = auth.currentUser;
+      deleteUser(user)
+        .then(() => {
+          console.log('account delete');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     async uploadPicture(image) {
       // console.log(image, 'whats image?');

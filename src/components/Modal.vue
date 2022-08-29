@@ -1,6 +1,7 @@
 <script setup>
 import { Camera, CameraResultType } from '@capacitor/camera';
 import { computed, ref } from 'vue-demi';
+import { useUserStore } from '../stores/user';
 import { useUserDataStore } from '../stores/userData';
 
 const props = defineProps({
@@ -14,6 +15,7 @@ const props = defineProps({
 
 const emit = defineEmits(['closeModal']);
 const store = useUserDataStore();
+const user = useUserStore();
 const showModal = ref(store.showModal);
 
 const showModalRef = computed(() => props.showModal);
@@ -73,12 +75,14 @@ function storeUploadProject(projectName, link, description, imageRef) {
 <template>
   <div
     v-if="showModalRef"
-    class="modal-overlay bg-black/50 fixed z-10 left-0 top-0 w-full h-full overflow-auto flex items-center justify-center p-8 dark:bg-black/75"
+    class="modal-overlay bg-black/50 fixed z-10 left-0 top-0 w-full h-full overflow-auto flex items-center justify-center p-8 dark:bg-gray-900/75"
   >
     <div
-      class="modal-content bg-white dark:bg-black p-4 rounded-lg w-full flex flex-col items-center"
+      class="modal-content bg-white dark:bg-black p-4 rounded-lg w-full flex flex-col items-center max-w-xl"
     >
-      <div class="w-full flex justify-end" @click="closeModal">X</div>
+      <div class="w-full flex justify-end" @click="closeModal">
+        <i class="fa-solid fa-circle-xmark text-lg text-blue-500"></i>
+      </div>
       <!-- HEADERLINE -->
       <form
         v-if="modalTypeRef === 'header'"
@@ -198,6 +202,23 @@ function storeUploadProject(projectName, link, description, imageRef) {
           <div @click="takePicture" class="blue-btn h-10">Add Image</div>
         </div>
         <button class="blue-btn">Save</button>
+      </form>
+
+      <!-- DELETE FORM -->
+
+      <form
+        v-if="modalTypeRef === 'delete'"
+        class="flex flex-col justify-center items-center"
+      >
+        <h2 class="text-lg font-headline">
+          Are you sure you want to delete your account?
+        </h2>
+        <div class="w-full flex flex-col max-w-xs">
+          <button class="blue-btn mt-4" @click="closeModal">Go back</button>
+          <button class="blue-btn bg-red-500" @click="user.deleteAccount">
+            Confirm
+          </button>
+        </div>
       </form>
     </div>
   </div>

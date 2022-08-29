@@ -53,13 +53,13 @@ const submitForm = () => {
   <div
     class="flex relative flex-col p-8 justify-center items-center text-black dark:text-white"
   >
-    <div class="w-full h-64 overflow-hidden">
+    <div class="w-full max-w-sm h-[17rem] overflow-hidden">
       <transition name="fade">
         <form
           @submit.prevent="submitForm"
           v-if="showEmailForm"
           action=""
-          class="w-full max-w-xl flex flex-col justify-center items-center p-4"
+          class="w-full max-w-sm flex flex-col justify-center items-center p-4"
         >
           <label for="email" class="w-full text-left text-base font-headline"
             >Email</label
@@ -82,7 +82,7 @@ const submitForm = () => {
       </transition>
     </div>
 
-    <div class="w-full mt-10 flex flex-col items-center">
+    <div class="w-full max-w-sm mt-10 flex flex-col items-center">
       <button class="google-btn" @click="store.signInWithGoogle()">
         <img
           class="h-full"

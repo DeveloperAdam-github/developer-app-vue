@@ -141,7 +141,7 @@ const loadUserData = onMounted(() => {
                 class="w-full xl:px-[10%] xl:mt-10 h-full overflow-scroll my-2 flex flex-col"
               >
                 <div
-                  class="flex flex-col items-center my-4"
+                  class="flex flex-col mt-10 w-full items-center my-4"
                   v-for="(project, index) in store.projects"
                   :key="index"
                 >

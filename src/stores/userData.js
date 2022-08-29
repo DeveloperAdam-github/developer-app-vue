@@ -199,7 +199,6 @@ export const useUserDataStore = defineStore({
       }
     },
     toggleModalView(value) {
-      console.log(value, 'lol');
       this.showModal = value;
     },
     resetData() {
