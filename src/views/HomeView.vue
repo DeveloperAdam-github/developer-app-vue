@@ -29,7 +29,7 @@ const showButtons = ref(false);
 const showLoginForm = ref(false);
 const showModal = ref(userDataStore.showModal);
 const user = ref(store.user);
-const modalType = ref('');
+const modalType = ref(userDataStore.modalType);
 
 const takePicture = async () => {
   const image = await Camera.getPhoto({
@@ -86,9 +86,8 @@ const toggleRegisterForm = () => {
 
 function toggleModal(value) {
   showModal.value = true;
-  userDataStore.toggleModalView(true);
-  modalType.value = value;
-  // console.log(showModal.value, 'toggle?');
+  userDataStore.toggleModalView(true, value);
+
 }
 
 function sendEmail() {}
@@ -229,10 +228,7 @@ function sendEmail() {}
                   Loves Doughnuts, Writes Code. Click to add yours..
                 </p>
               </div>
-              <div
-                class="w-full flex my-1 flex-wrap"
-                v-if="userDataStore.pills && userDataStore.pills.length > 0"
-              >
+              <div class="w-full flex my-1 flex-wrap">
                 <!-- PILLS -->
                 <div
                   v-for="(pill, index) in userDataStore.pills"
@@ -249,10 +245,7 @@ function sendEmail() {}
                 </div>
               </div>
               <!-- ICONS -->
-              <div
-                class="flex mt-1 flex-wrap"
-                v-if="userDataStore.socials && userDataStore.socials.length > 0"
-              >
+              <div class="flex mt-1 items-center flex-wrap">
                 <div
                   v-for="(social, index) in userDataStore.socials"
                   :key="index"

@@ -19,7 +19,7 @@ const user = useUserStore();
 const showModal = ref(store.showModal);
 
 const showModalRef = computed(() => props.showModal);
-const modalTypeRef = computed(() => props.modalType);
+const modalTypeRef = ref(store.modalType);
 const headerLine = ref('');
 const email = ref('');
 const pill = ref('');
@@ -85,7 +85,7 @@ function storeUploadProject(projectName, link, description, imageRef) {
       </div>
       <!-- HEADERLINE -->
       <form
-        v-if="modalTypeRef === 'header'"
+        v-if="store.modalType === 'header'"
         @submit.prevent="storeUploadHeaderLine(headerLine)"
         class="w-full my-2 flex flex-col items-center"
       >
@@ -102,7 +102,7 @@ function storeUploadProject(projectName, link, description, imageRef) {
 
       <!-- EMAIL  -->
       <form
-        v-if="modalTypeRef === 'email'"
+        v-if="store.modalType === 'email'"
         @submit.prevent="storeUploadEmail(email)"
         class="w-full my-2 flex flex-col items-center"
       >
@@ -119,7 +119,7 @@ function storeUploadProject(projectName, link, description, imageRef) {
 
       <!-- PILL -->
       <form
-        v-if="modalTypeRef === 'pillForm'"
+        v-if="store.modalType === 'pillForm'"
         @submit.prevent="storeUploadPill(pill)"
         class="w-full my-2 flex flex-col items-center"
       >
@@ -136,7 +136,7 @@ function storeUploadProject(projectName, link, description, imageRef) {
 
       <!-- SOCIAL LINK -->
       <form
-        v-if="modalTypeRef === 'socialLink'"
+        v-if="store.modalType === 'socialLink'"
         @submit.prevent="storeUploadSocial(social, platform)"
         class="w-full my-2 flex flex-col items-center"
       >
@@ -168,7 +168,7 @@ function storeUploadProject(projectName, link, description, imageRef) {
 
       <!-- PROJECT FORM -->
       <form
-        v-if="modalTypeRef === 'project'"
+        v-if="store.modalType === 'project'"
         @submit.prevent="
           storeUploadProject(projectName, link, description, imageRef)
         "
@@ -207,7 +207,7 @@ function storeUploadProject(projectName, link, description, imageRef) {
       <!-- DELETE FORM -->
 
       <form
-        v-if="modalTypeRef === 'delete'"
+        v-if="store.modalType === 'delete'"
         class="flex flex-col justify-center items-center"
       >
         <h2 class="text-lg font-headline">

@@ -27,6 +27,7 @@ export const useUserDataStore = defineStore({
     pills: [],
     socials: [],
     projects: [],
+    modalType: '',
   }),
   getters: {},
   actions: {
@@ -198,13 +199,19 @@ export const useUserDataStore = defineStore({
         console.log(error, 'errorrrrrr');
       }
     },
-    toggleModalView(value) {
+    toggleModalView(value, data) {
+      console.log(data, 'whats data', value);
       this.showModal = value;
+      this.modalType = data;
     },
     resetData() {
       this.heroImage = null;
       this.headerLine = null;
       this.showModal = false;
+      this.email = '';
+      this.pills = '';
+      this.socials = '';
+      this.projects = '';
     },
   },
 });

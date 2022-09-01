@@ -36,7 +36,6 @@ const modalType = ref('');
 const route = ref(useRouter());
 
 function toggleNav(value) {
-  console.log(value);
   showNav.value = value;
 }
 
@@ -46,9 +45,9 @@ function logoutUser() {
 
 function toggleModal(value) {
   showModal.value = true;
-  userDataStore.toggleModalView(true);
-  modalType.value = value;
-  // console.log(showModal.value, 'toggle?');
+  this.showNav = false;
+  console.log(value, 'lol');
+  userDataStore.toggleModalView(showModal.value, 'delete');
 }
 
 function copyLinkToClipboard(value) {
@@ -61,20 +60,13 @@ function copyLinkToClipboard(value) {
     showToast.value = false;
   }, 6000);
 }
-
-// async function test() {
-//   const querySnapshot = await getDocs(collection(db, 'uniqueLinks'));
-//   querySnapshot.forEach((doc) => {
-//     console.log(`${doc.id} => ${doc.data()}`);
-//   });
-// }
-// test();
 </script>
 
 <template>
   <div :class="store.darkMode === true ? 'dark' : ''">
     <div class="h-screen w-screen bg-white dark:bg-black relative">
       <div
+        v-if="userStore.user"
         :class="showNav ? 'h-96 ' : 'h-0'"
         class="w-full z-50 top-[10vh] absolute overflow-hidden transition-height duration-500 ease-in-out items-center justify-center bg-white text-black dark:text-white dark:bg-black flex flex-col"
       >
@@ -82,11 +74,6 @@ function copyLinkToClipboard(value) {
         <button class="blue-btn bg-red-500 my-8" @click="toggleModal('delete')">
           Delete Account
         </button>
-        <modal
-          :showModal="userDataStore.showModal"
-          :modalType="modalType"
-          @closeModal="toggleModal"
-        />
       </div>
       <navbar
         v-if="route.currentRoute.name !== 'user'"

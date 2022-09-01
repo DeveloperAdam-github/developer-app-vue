@@ -105,7 +105,7 @@ export const useUserStore = defineStore({
       });
       this.user = result.user;
       this.uniqueLink = result.user.uid;
-      userDataStore.getAllUserData();
+      await userDataStore.getAllUserData();
     },
     async signInWithGoogle() {
       if (Capacitor.isNativePlatform()) {
@@ -128,7 +128,8 @@ export const useUserStore = defineStore({
       const user = auth.currentUser;
       deleteUser(user)
         .then(() => {
-          console.log('account delete');
+          console.log('account deleted?');
+          this.user = null;
         })
         .catch((err) => {
           console.log(err);
